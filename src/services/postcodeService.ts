@@ -1,5 +1,5 @@
 /**
- * TrustPost data access layer.
+ * Adrex data access layer.
  *
  * Every read the UI makes goes through this module. It is backed by mock
  * data today; swap the function bodies for calls to the National Digital

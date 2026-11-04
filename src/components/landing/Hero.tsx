@@ -16,7 +16,7 @@ export function Hero() {
             One trusted address layer for Nigeria
           </h1>
           <p className="max-w-xl text-lg text-primary-foreground/75">
-            TrustPost turns the national postcode into a confidence score you can act on — at
+            Adrex turns the national postcode into a confidence score you can act on — at
             checkout, during KYC, and when someone dials for help.
           </p>
           <div className="flex flex-wrap gap-3">

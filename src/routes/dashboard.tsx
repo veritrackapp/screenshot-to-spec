@@ -7,9 +7,9 @@ import { PageHeader, PageShell } from "@/components/layout/PageHeader";
 import { Badge } from "@/components/ui/badge";
 import { getDashboardData, KPI_ASSUMPTIONS } from "@/services/postcodeService";
 
-const title = "Business dashboard — TrustPost";
+const title = "Business dashboard — Adrex";
 const description =
-  "See addresses checked, failed deliveries avoided, fake addresses blocked and naira saved with TrustPost address scoring.";
+  "See addresses checked, failed deliveries avoided, fake addresses blocked and naira saved with Adrex address scoring.";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({

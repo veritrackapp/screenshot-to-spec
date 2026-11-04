@@ -3,9 +3,9 @@ import { Building2, Clock, Filter, Scale } from "lucide-react";
 import { PageHeader, PageShell } from "@/components/layout/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
 
-const title = "Privacy — TrustPost";
+const title = "Privacy — Adrex";
 const description =
-  "How TrustPost minimises data, deletes raw records after 90 days, and splits controller and processor roles under the Nigeria Data Protection Act 2023.";
+  "How Adrex minimises data, deletes raw records after 90 days, and splits controller and processor roles under the Nigeria Data Protection Act 2023.";
 
 export const Route = createFileRoute("/privacy")({
   head: () => ({
@@ -45,8 +45,8 @@ const sections = [
     Icon: Building2,
     title: "Controller and processor",
     points: [
-      "The business using TrustPost (a store, bank or logistics firm) is the data controller: it decides why the address is checked.",
-      "TrustPost is the data processor: it scores addresses only on the controller's instructions, under a written agreement.",
+      "The business using Adrex (a store, bank or logistics firm) is the data controller: it decides why the address is checked.",
+      "Adrex is the data processor: it scores addresses only on the controller's instructions, under a written agreement.",
       "Postcode reference data comes from the national postcode system; we don't sell or share check data with third parties.",
     ],
   },
@@ -67,7 +67,7 @@ function PrivacyPage() {
       <PageHeader
         eyebrow="Privacy"
         title="Trust starts with how we handle data"
-        description="TrustPost is designed around the Nigeria Data Protection Act 2023: collect less, keep it briefly, and be clear about who is responsible."
+        description="Adrex is designed around the Nigeria Data Protection Act 2023: collect less, keep it briefly, and be clear about who is responsible."
       />
       <div className="grid gap-5 md:grid-cols-2">
         {sections.map(({ Icon, title, points }) => (
@@ -92,7 +92,7 @@ function PrivacyPage() {
         ))}
       </div>
       <p className="text-xs text-muted-foreground">
-        This page describes the intended design of the TrustPost demo and is not legal advice.
+        This page describes the intended design of the Adrex demo and is not legal advice.
       </p>
     </PageShell>
   );

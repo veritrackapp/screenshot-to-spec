@@ -41,7 +41,7 @@ export function PhoneScreen({ state }: { state: PhoneState }) {
             </p>
           ) : (
             <div className="mt-8 text-center">
-              <p className="text-base font-semibold">TrustPost</p>
+              <p className="text-base font-semibold">Adrex</p>
               <p className="mt-1 opacity-75">Dial *384# for help</p>
             </div>
           ))}
