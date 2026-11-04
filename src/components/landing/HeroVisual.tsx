@@ -10,7 +10,7 @@ const reasons = [
 export function HeroVisual() {
   return (
     <div className="relative mx-auto w-full max-w-md">
-      <div className="rounded-2xl border border-primary-foreground/10 bg-card p-6 text-card-foreground shadow-elevated">
+      <div className="rounded-2xl border border-primary-foreground/10 bg-card p-6 text-card-foreground shadow-elevated sm:pb-12">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
