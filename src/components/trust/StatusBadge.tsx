@@ -12,7 +12,13 @@ export const STATUS_META: Record<
   high_risk: { label: "High risk", variant: "danger", Icon: ShieldAlert },
 };
 
-export function StatusBadge({ status, className }: { status: VerificationStatus; className?: string }) {
+export function StatusBadge({
+  status,
+  className,
+}: {
+  status: VerificationStatus;
+  className?: string;
+}) {
   const { label, variant, Icon } = STATUS_META[status];
   return (
     <Badge variant={variant} className={cn("gap-1 rounded-full", className)}>

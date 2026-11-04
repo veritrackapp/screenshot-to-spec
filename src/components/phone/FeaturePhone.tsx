@@ -71,9 +71,19 @@ export function FeaturePhone({
 
       <div className="mt-4 grid grid-cols-3 gap-2.5">
         {KEYS.map(({ key, sub }) => (
-          <button key={key} type="button" className={keyClass} onClick={() => onKey(key)} aria-label={`Key ${key}`}>
+          <button
+            key={key}
+            type="button"
+            className={keyClass}
+            onClick={() => onKey(key)}
+            aria-label={`Key ${key}`}
+          >
             <span className="text-lg font-semibold leading-none">{key}</span>
-            {sub && <span className="text-[9px] uppercase leading-none tracking-wider opacity-70">{sub}</span>}
+            {sub && (
+              <span className="text-[9px] uppercase leading-none tracking-wider opacity-70">
+                {sub}
+              </span>
+            )}
           </button>
         ))}
       </div>

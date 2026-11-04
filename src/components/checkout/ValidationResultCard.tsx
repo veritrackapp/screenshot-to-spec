@@ -98,7 +98,9 @@ export function ValidationResultCard({ result }: { result: ValidationResult }) {
       <CardContent className="space-y-6 p-6">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Postcode</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              Postcode
+            </p>
             <p className="mt-1 font-mono text-2xl font-semibold">{result.postcode}</p>
             {result.matched && (
               <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
@@ -127,7 +129,10 @@ export function ValidationResultCard({ result }: { result: ValidationResult }) {
             aria-label="Confidence score"
           >
             <div
-              className={cn("h-full rounded-full transition-all duration-700", barTone[result.status])}
+              className={cn(
+                "h-full rounded-full transition-all duration-700",
+                barTone[result.status],
+              )}
               style={{ width: `${result.score}%` }}
             />
           </div>

@@ -1,5 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { dial, isEnd, respond, stripPrefix, type UssdIncidentEffect, type UssdSession } from "@/lib/ussd";
+import {
+  dial,
+  isEnd,
+  respond,
+  stripPrefix,
+  type UssdIncidentEffect,
+  type UssdSession,
+} from "@/lib/ussd";
 
 export type PhoneState =
   | { mode: "idle"; buffer: string }
@@ -74,7 +81,8 @@ export function useUssdPhone(onIncident: (incident: UssdIncidentEffect) => void)
   const typeText = useCallback(
     (text: string) => {
       lastTap.current = null;
-      if (state.mode === "idle" || state.mode === "session") setState({ ...state, buffer: state.buffer + text });
+      if (state.mode === "idle" || state.mode === "session")
+        setState({ ...state, buffer: state.buffer + text });
     },
     [state],
   );
@@ -90,13 +98,15 @@ export function useUssdPhone(onIncident: (incident: UssdIncidentEffect) => void)
 
   const clear = useCallback(() => {
     lastTap.current = null;
-    if (state.mode === "idle" || state.mode === "session") setState({ ...state, buffer: state.buffer.slice(0, -1) });
+    if (state.mode === "idle" || state.mode === "session")
+      setState({ ...state, buffer: state.buffer.slice(0, -1) });
   }, [state]);
 
   const end = useCallback(() => {
     lastTap.current = null;
     clearTimeout(pending.current);
-    if (state.mode === "session" || state.mode === "running") pushLog("in", "[session cancelled by user]");
+    if (state.mode === "session" || state.mode === "running")
+      pushLog("in", "[session cancelled by user]");
     setState({ mode: "idle", buffer: "" });
   }, [state]);
 
@@ -119,7 +129,12 @@ export function useUssdPhone(onIncident: (incident: UssdIncidentEffect) => void)
       if (isEnd(reply.response) || !reply.session) {
         setState({ mode: "ended", message: stripPrefix(reply.response) });
       } else {
-        setState({ mode: "session", session: reply.session, message: stripPrefix(reply.response), buffer: "" });
+        setState({
+          mode: "session",
+          session: reply.session,
+          message: stripPrefix(reply.response),
+          buffer: "",
+        });
       }
     }, NETWORK_DELAY_MS);
   }, [state, onIncident]);

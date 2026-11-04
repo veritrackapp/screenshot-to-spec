@@ -4,7 +4,11 @@ import { SAMPLE_POSTCODES, scoreAddress, statusForScore } from "@/services/postc
 
 describe("address scoring", () => {
   it("gives each of the 5 sample postcodes its expected status", () => {
-    const labels = { verified: "Verified", review: "Needs review", high_risk: "High risk" } as const;
+    const labels = {
+      verified: "Verified",
+      review: "Needs review",
+      high_risk: "High risk",
+    } as const;
     expect(SAMPLE_POSTCODES).toHaveLength(5);
     for (const s of SAMPLE_POSTCODES) {
       expect(labels[scoreAddress(s.postcode, s.address).status]).toBe(s.expected);
@@ -20,7 +24,12 @@ describe("address scoring", () => {
   });
 
   it("marks an unknown postcode as high risk with a reason", () => {
-    const r = scoreAddress("ZZ9 0XX", { street: "1 A St", area: "", city: "Lagos", state: "Lagos" });
+    const r = scoreAddress("ZZ9 0XX", {
+      street: "1 A St",
+      area: "",
+      city: "Lagos",
+      state: "Lagos",
+    });
     expect(r.status).toBe("high_risk");
     expect(r.reasons[0]?.label).toMatch(/not found/i);
   });

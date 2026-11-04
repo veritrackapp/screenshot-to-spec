@@ -11,11 +11,7 @@ export const USSD_CODE = "*384#";
 export type IncidentType = "medical" | "fire" | "security";
 
 export type UssdStep =
-  | "menu"
-  | "report_postcode"
-  | "report_type"
-  | "hospital_postcode"
-  | "police_postcode";
+  "menu" | "report_postcode" | "report_type" | "hospital_postcode" | "police_postcode";
 
 export interface UssdSession {
   step: UssdStep;
@@ -62,14 +58,21 @@ export function dial(code: string): UssdReply {
 
 type Lookup = (postcode: string) => PostcodeRecord | undefined;
 
-export function respond(session: UssdSession, rawInput: string, lookup: Lookup = findPostcode): UssdReply {
+export function respond(
+  session: UssdSession,
+  rawInput: string,
+  lookup: Lookup = findPostcode,
+): UssdReply {
   const input = rawInput.trim();
 
   switch (session.step) {
     case "menu": {
-      if (input === "1") return { session: { step: "report_postcode" }, response: "CON Enter your postcode:" };
-      if (input === "2") return { session: { step: "hospital_postcode" }, response: "CON Enter your postcode:" };
-      if (input === "3") return { session: { step: "police_postcode" }, response: "CON Enter your postcode:" };
+      if (input === "1")
+        return { session: { step: "report_postcode" }, response: "CON Enter your postcode:" };
+      if (input === "2")
+        return { session: { step: "hospital_postcode" }, response: "CON Enter your postcode:" };
+      if (input === "3")
+        return { session: { step: "police_postcode" }, response: "CON Enter your postcode:" };
       if (input === "0") return { session: null, response: "END Thank you for using TrustPost." };
       return { session, response: `CON Invalid choice.\n${MENU_TEXT.slice(4)}` };
     }
@@ -79,15 +82,24 @@ export function respond(session: UssdSession, rawInput: string, lookup: Lookup =
     case "police_postcode": {
       const record = lookup(input);
       if (!record) {
-        return { session, response: `CON Postcode ${formatPostcode(input) || "(empty)"} not found.\nEnter your postcode:` };
+        return {
+          session,
+          response: `CON Postcode ${formatPostcode(input) || "(empty)"} not found.\nEnter your postcode:`,
+        };
       }
       if (session.step === "hospital_postcode") {
         const h = record.nearestHospital;
-        return { session: null, response: `END Nearest hospital:\n${h.name}\n${h.distanceKm} km away\nCall ${h.phone}` };
+        return {
+          session: null,
+          response: `END Nearest hospital:\n${h.name}\n${h.distanceKm} km away\nCall ${h.phone}`,
+        };
       }
       if (session.step === "police_postcode") {
         const p = record.nearestPolice;
-        return { session: null, response: `END Nearest police:\n${p.name}\n${p.distanceKm} km away\nCall ${p.phone}` };
+        return {
+          session: null,
+          response: `END Nearest police:\n${p.name}\n${p.distanceKm} km away\nCall ${p.phone}`,
+        };
       }
       return {
         session: { step: "report_type", record },

@@ -31,10 +31,16 @@ export const Route = createFileRoute("/emergency")({
 });
 
 const steps = [
-  <>Dial <code className="font-mono font-semibold">{USSD_CODE}</code> and press the green key.</>,
-  <>Choose <strong>1</strong> to report an emergency.</>,
+  <>
+    Dial <code className="font-mono font-semibold">{USSD_CODE}</code> and press the green key.
+  </>,
+  <>
+    Choose <strong>1</strong> to report an emergency.
+  </>,
   <>Enter your postcode — tap a key repeatedly for letters, or use a sample below.</>,
-  <>Pick the type: <strong>1</strong> Medical, <strong>2</strong> Fire, <strong>3</strong> Security.</>,
+  <>
+    Pick the type: <strong>1</strong> Medical, <strong>2</strong> Fire, <strong>3</strong> Security.
+  </>,
 ];
 
 function EmergencyPage() {
@@ -67,9 +73,9 @@ function EmergencyPage() {
       const target = e.target as HTMLElement | null;
       if (target && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
-      if (e.key === "Enter") return e.preventDefault(), phone.call();
+      if (e.key === "Enter") return (e.preventDefault(), phone.call());
       if (e.key === "Escape") return phone.end();
-      if (e.key === "Backspace") return e.preventDefault(), phone.clear();
+      if (e.key === "Backspace") return (e.preventDefault(), phone.clear());
       if (/^[0-9*#]$/.test(e.key)) return phone.typeText(e.key);
       if (/^[a-zA-Z]$/.test(e.key)) return phone.typeText(e.key.toUpperCase());
     };
@@ -122,7 +128,8 @@ function EmergencyPage() {
 
               <div className="space-y-2">
                 <p className="text-sm font-medium">
-                  Sample postcodes {textStep ? "— tap to enter" : "(available at the postcode step)"}
+                  Sample postcodes{" "}
+                  {textStep ? "— tap to enter" : "(available at the postcode step)"}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {SAMPLE_POSTCODES.map((s) => (

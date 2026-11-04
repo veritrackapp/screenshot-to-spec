@@ -1,5 +1,12 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { StatusBadge } from "@/components/trust/StatusBadge";
 import { formatMinutesAgo } from "@/lib/format";
 import type { RecentCheck } from "@/services/types";
@@ -30,7 +37,9 @@ export function RecentChecksTable({ rows }: { rows: RecentCheck[] }) {
                 <TableCell className="font-mono text-xs text-muted-foreground">{r.id}</TableCell>
                 <TableCell className="font-medium">{r.merchant}</TableCell>
                 <TableCell className="font-mono">{r.postcode}</TableCell>
-                <TableCell className="hidden text-muted-foreground md:table-cell">{r.area}</TableCell>
+                <TableCell className="hidden text-muted-foreground md:table-cell">
+                  {r.area}
+                </TableCell>
                 <TableCell className="text-right font-semibold tabular-nums">{r.score}</TableCell>
                 <TableCell>
                   <StatusBadge status={r.status} />

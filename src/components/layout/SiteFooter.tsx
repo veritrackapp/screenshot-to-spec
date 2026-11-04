@@ -15,7 +15,11 @@ export function SiteFooter() {
         </div>
         <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm" aria-label="Footer">
           {NAV_ITEMS.map((item) => (
-            <Link key={item.to} to={item.to} className="text-muted-foreground hover:text-foreground">
+            <Link
+              key={item.to}
+              to={item.to}
+              className="text-muted-foreground hover:text-foreground"
+            >
               {item.label}
             </Link>
           ))}
@@ -24,7 +28,8 @@ export function SiteFooter() {
       <div className="border-t bg-muted">
         <p className="mx-auto flex max-w-7xl items-center gap-2 px-4 py-3 text-xs text-muted-foreground sm:px-6">
           <Info className="size-3.5 shrink-0" aria-hidden />
-          Demo build: all postcodes, scores, incidents and business figures are mock data, not real records.
+          Demo build: all postcodes, scores, incidents and business figures are mock data, not real
+          records.
         </p>
       </div>
     </footer>

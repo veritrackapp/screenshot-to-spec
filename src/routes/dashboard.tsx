@@ -35,7 +35,11 @@ function DashboardPage() {
         eyebrow="Business dashboard"
         title="Your address trust, at a glance"
         description={`Savings assume ₦${KPI_ASSUMPTIONS.avgFailedDeliveryCost.toLocaleString("en-NG")} per failed delivery and ₦${KPI_ASSUMPTIONS.avgFraudLoss.toLocaleString("en-NG")} per blocked fraud attempt.`}
-        actions={<Badge variant="muted" className="rounded-full">Last 30 days</Badge>}
+        actions={
+          <Badge variant="muted" className="rounded-full">
+            Last 30 days
+          </Badge>
+        }
       />
       <KpiCards kpis={data.kpis} />
       <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">

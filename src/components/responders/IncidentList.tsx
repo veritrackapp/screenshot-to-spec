@@ -47,7 +47,9 @@ export function IncidentList({
                 <div className="min-w-0">
                   <p className="flex flex-wrap items-center gap-2 font-semibold">
                     {TYPE_META[i.type].label}
-                    <span className="font-mono text-sm font-medium text-muted-foreground">{i.postcode}</span>
+                    <span className="font-mono text-sm font-medium text-muted-foreground">
+                      {i.postcode}
+                    </span>
                     {freshIds.has(i.id) && (
                       <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold uppercase text-primary-foreground">
                         Live

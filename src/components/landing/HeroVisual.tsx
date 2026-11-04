@@ -13,7 +13,9 @@ export function HeroVisual() {
       <div className="rounded-2xl border border-primary-foreground/10 bg-card p-6 text-card-foreground shadow-elevated">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Postcode</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              Postcode
+            </p>
             <p className="mt-1 font-mono text-2xl font-semibold">LA1 4KJ</p>
             <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
               <MapPin className="size-3.5" aria-hidden /> Ikeja GRA, Lagos

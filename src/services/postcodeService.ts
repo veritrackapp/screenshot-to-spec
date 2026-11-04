@@ -84,7 +84,10 @@ export function scoreAddress(postcode: string, address: AddressInput): Validatio
       score += 15;
       reasons.push({ label: `State matches postcode (${record.state})`, outcome: "pass" });
     } else {
-      reasons.push({ label: `State doesn't match postcode (expected ${record.state})`, outcome: "fail" });
+      reasons.push({
+        label: `State doesn't match postcode (expected ${record.state})`,
+        outcome: "fail",
+      });
     }
 
     if (same(address.city, record.city)) {

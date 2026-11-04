@@ -16,11 +16,20 @@ export function GatewayLog({ entries }: { entries: GatewayLogEntry[] }) {
         <CardDescription>Raw replies: CON keeps the session open, END closes it.</CardDescription>
       </CardHeader>
       <CardContent>
-        <div ref={ref} className="h-48 overflow-y-auto rounded-lg bg-primary-deep p-3 font-mono text-[11px] leading-relaxed text-primary-foreground/90">
-          {entries.length === 0 && <p className="text-primary-foreground/50">Waiting for a session…</p>}
+        <div
+          ref={ref}
+          className="h-48 overflow-y-auto rounded-lg bg-primary-deep p-3 font-mono text-[11px] leading-relaxed text-primary-foreground/90"
+        >
+          {entries.length === 0 && (
+            <p className="text-primary-foreground/50">Waiting for a session…</p>
+          )}
           {entries.map((e) => (
             <p key={e.id} className="whitespace-pre-wrap">
-              <span className={cn(e.direction === "out" ? "text-primary-glow" : "text-primary-foreground/50")}>
+              <span
+                className={cn(
+                  e.direction === "out" ? "text-primary-glow" : "text-primary-foreground/50",
+                )}
+              >
                 {e.direction === "out" ? "→ " : "← "}
               </span>
               {e.text}

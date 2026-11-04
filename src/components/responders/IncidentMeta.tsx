@@ -4,13 +4,17 @@ import type { IncidentType } from "@/lib/ussd";
 import type { IncidentStatus } from "@/store/incidents";
 import { cn } from "@/lib/utils";
 
-export const TYPE_META: Record<IncidentType, { label: string; Icon: typeof Flame; tone: string }> = {
-  medical: { label: "Medical", Icon: HeartPulse, tone: "bg-danger-soft text-danger" },
-  fire: { label: "Fire", Icon: Flame, tone: "bg-warning-soft text-warning" },
-  security: { label: "Security", Icon: ShieldAlert, tone: "bg-info-soft text-info" },
-};
+export const TYPE_META: Record<IncidentType, { label: string; Icon: typeof Flame; tone: string }> =
+  {
+    medical: { label: "Medical", Icon: HeartPulse, tone: "bg-danger-soft text-danger" },
+    fire: { label: "Fire", Icon: Flame, tone: "bg-warning-soft text-warning" },
+    security: { label: "Security", Icon: ShieldAlert, tone: "bg-info-soft text-info" },
+  };
 
-export const STATUS_META: Record<IncidentStatus, { label: string; variant: "danger" | "info" | "success"; dot: string }> = {
+export const STATUS_META: Record<
+  IncidentStatus,
+  { label: string; variant: "danger" | "info" | "success"; dot: string }
+> = {
   new: { label: "New", variant: "danger", dot: "bg-danger" },
   dispatched: { label: "Dispatched", variant: "info", dot: "bg-info" },
   resolved: { label: "Resolved", variant: "success", dot: "bg-success" },

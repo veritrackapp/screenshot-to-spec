@@ -27,7 +27,12 @@ export function SiteHeader() {
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
           {NAV_ITEMS.map((item) => (
-            <Link key={item.to} to={item.to} className={linkClass} activeProps={{ className: activeClass }}>
+            <Link
+              key={item.to}
+              to={item.to}
+              className={linkClass}
+              activeProps={{ className: activeClass }}
+            >
               {item.label}
             </Link>
           ))}

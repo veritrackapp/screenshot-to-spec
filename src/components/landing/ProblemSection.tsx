@@ -5,14 +5,17 @@ const problems = [
   {
     Icon: PackageX,
     title: "Failed deliveries",
-    problem: "“Opposite the yellow church” isn't an address. Riders call, wait, and return parcels.",
-    solution: "Postcodes are checked before an order ships, so bad addresses are fixed at checkout.",
+    problem:
+      "“Opposite the yellow church” isn't an address. Riders call, wait, and return parcels.",
+    solution:
+      "Postcodes are checked before an order ships, so bad addresses are fixed at checkout.",
   },
   {
     Icon: UserX,
     title: "Fake KYC addresses",
     problem: "Fraudsters reuse made-up addresses to open accounts and take loans.",
-    solution: "Every address gets a score, and areas linked to many unrelated identities are flagged.",
+    solution:
+      "Every address gets a score, and areas linked to many unrelated identities are flagged.",
   },
   {
     Icon: Siren,
@@ -39,8 +42,12 @@ export function ProblemSection() {
 
         <div className="space-y-10">
           <div className="space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">The problem</p>
-            <h2 className="text-3xl font-semibold sm:text-4xl">An address you can't trust costs everyone</h2>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+              The problem
+            </p>
+            <h2 className="text-3xl font-semibold sm:text-4xl">
+              An address you can't trust costs everyone
+            </h2>
           </div>
           <div className="space-y-6">
             {problems.map(({ Icon, title, problem, solution }) => (

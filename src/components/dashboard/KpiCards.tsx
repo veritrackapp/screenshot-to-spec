@@ -5,10 +5,30 @@ import type { DashboardKpis } from "@/services/types";
 
 export function KpiCards({ kpis }: { kpis: DashboardKpis }) {
   const items = [
-    { label: "Addresses checked", value: formatNumber(kpis.addressesChecked), Icon: ScanSearch, note: "Last 30 days" },
-    { label: "Failed deliveries avoided", value: formatNumber(kpis.failedDeliveriesAvoided), Icon: PackageCheck, note: "Fixed before dispatch" },
-    { label: "Fake addresses blocked", value: formatNumber(kpis.fakeAddressesBlocked), Icon: ShieldX, note: "At checkout and KYC" },
-    { label: "Estimated naira saved", value: formatNaira(kpis.nairaSaved), Icon: Banknote, note: "Re-delivery + fraud losses" },
+    {
+      label: "Addresses checked",
+      value: formatNumber(kpis.addressesChecked),
+      Icon: ScanSearch,
+      note: "Last 30 days",
+    },
+    {
+      label: "Failed deliveries avoided",
+      value: formatNumber(kpis.failedDeliveriesAvoided),
+      Icon: PackageCheck,
+      note: "Fixed before dispatch",
+    },
+    {
+      label: "Fake addresses blocked",
+      value: formatNumber(kpis.fakeAddressesBlocked),
+      Icon: ShieldX,
+      note: "At checkout and KYC",
+    },
+    {
+      label: "Estimated naira saved",
+      value: formatNaira(kpis.nairaSaved),
+      Icon: Banknote,
+      note: "Re-delivery + fraud losses",
+    },
   ];
 
   return (

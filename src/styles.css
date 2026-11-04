@@ -138,7 +138,8 @@
   --chart-4: oklch(0.55 0.2 27);
   --chart-5: oklch(0.5 0.11 230);
 
-  --gradient-hero: radial-gradient(
+  --gradient-hero:
+    radial-gradient(
       ellipse 80% 60% at 85% 10%,
       color-mix(in oklab, var(--primary-glow) 35%, transparent),
       transparent 70%
@@ -146,11 +147,13 @@
     linear-gradient(160deg, var(--primary-deep), oklch(0.2 0.045 165));
   --gradient-soft: linear-gradient(180deg, var(--secondary), var(--background));
 
-  --shadow-card: 0 1px 2px color-mix(in oklab, var(--primary-deep) 6%, transparent),
+  --shadow-card:
+    0 1px 2px color-mix(in oklab, var(--primary-deep) 6%, transparent),
     0 8px 24px -12px color-mix(in oklab, var(--primary-deep) 14%, transparent);
   --shadow-elevated: 0 24px 60px -20px color-mix(in oklab, var(--primary-deep) 45%, transparent);
-  --shadow-phone: 0 30px 60px -20px oklch(0.2 0.01 250 / 55%),
-    inset 0 2px 0 oklch(1 0 0 / 25%), inset 0 -4px 0 oklch(0 0 0 / 15%);
+  --shadow-phone:
+    0 30px 60px -20px oklch(0.2 0.01 250 / 55%), inset 0 2px 0 oklch(1 0 0 / 25%),
+    inset 0 -4px 0 oklch(0 0 0 / 15%);
 
   --sidebar: oklch(0.985 0.004 155);
   --sidebar-foreground: oklch(0.21 0.035 165);
@@ -208,7 +211,8 @@
 
 @utility map-grid {
   background-color: var(--map);
-  background-image: linear-gradient(var(--map-grid) 1px, transparent 1px),
+  background-image:
+    linear-gradient(var(--map-grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--map-grid) 1px, transparent 1px);
   background-size: 32px 32px;
 }

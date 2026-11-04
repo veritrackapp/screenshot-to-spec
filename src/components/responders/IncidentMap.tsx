@@ -37,7 +37,9 @@ export function IncidentMap({
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-base">Incident map</CardTitle>
-        <CardDescription>Placeholder view — postcode centroids plotted across Nigeria</CardDescription>
+        <CardDescription>
+          Placeholder view — postcode centroids plotted across Nigeria
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="map-grid relative aspect-[6/5] overflow-hidden rounded-xl border">
@@ -62,14 +64,20 @@ export function IncidentMap({
                 style={position(i.lat, i.lng)}
               >
                 {i.status === "new" && (
-                  <span className={cn("absolute inset-0 rounded-full animate-ping-soft", STATUS_META[i.status].dot)} />
+                  <span
+                    className={cn(
+                      "absolute inset-0 rounded-full animate-ping-soft",
+                      STATUS_META[i.status].dot,
+                    )}
+                  />
                 )}
                 <span
                   className={cn(
                     "relative block size-3.5 rounded-full border-2 border-card",
                     STATUS_META[i.status].dot,
                     !active && "opacity-60",
-                    selectedId === i.id && "size-5 ring-2 ring-primary ring-offset-2 ring-offset-map",
+                    selectedId === i.id &&
+                      "size-5 ring-2 ring-primary ring-offset-2 ring-offset-map",
                   )}
                 />
               </button>
@@ -80,8 +88,8 @@ export function IncidentMap({
           {selected ? (
             <p>
               <span className="font-semibold">{TYPE_META[selected.type].label}</span> at{" "}
-              <span className="font-mono">{selected.postcode}</span> — {selected.area}, {selected.city},{" "}
-              {selected.state}
+              <span className="font-mono">{selected.postcode}</span> — {selected.area},{" "}
+              {selected.city}, {selected.state}
             </p>
           ) : (
             <p className="text-muted-foreground">Select an incident to locate it.</p>

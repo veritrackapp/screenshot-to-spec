@@ -26,12 +26,30 @@ export function ChecksChart({ data }: { data: DailyChecks[] }) {
         <ChartContainer config={config} className="aspect-auto h-72 w-full">
           <LineChart data={data} margin={{ left: 4, right: 12, top: 8 }}>
             <CartesianGrid vertical={false} />
-            <XAxis dataKey="label" tickLine={false} axisLine={false} minTickGap={24} tickMargin={8} />
+            <XAxis
+              dataKey="label"
+              tickLine={false}
+              axisLine={false}
+              minTickGap={24}
+              tickMargin={8}
+            />
             <YAxis tickLine={false} axisLine={false} width={40} />
             <ChartTooltip content={<ChartTooltipContent />} />
             <ChartLegend content={<ChartLegendContent />} />
-            <Line dataKey="checks" type="monotone" stroke="var(--color-checks)" strokeWidth={2.5} dot={false} />
-            <Line dataKey="flagged" type="monotone" stroke="var(--color-flagged)" strokeWidth={2} dot={false} />
+            <Line
+              dataKey="checks"
+              type="monotone"
+              stroke="var(--color-checks)"
+              strokeWidth={2.5}
+              dot={false}
+            />
+            <Line
+              dataKey="flagged"
+              type="monotone"
+              stroke="var(--color-flagged)"
+              strokeWidth={2}
+              dot={false}
+            />
           </LineChart>
         </ChartContainer>
       </CardContent>

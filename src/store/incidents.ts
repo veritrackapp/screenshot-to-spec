@@ -28,9 +28,45 @@ const EMPTY: Incident[] = [];
 function seed(): Incident[] {
   const now = Date.now();
   return [
-    { id: "INC-2041", type: "security", postcode: "KN3 2SB", area: "Sabon Gari", city: "Kano", state: "Kano", lat: 12.01, lng: 8.53, createdAt: now - 6 * 60_000, status: "dispatched", channel: "USSD" },
-    { id: "INC-2040", type: "medical", postcode: "FC2 9WS", area: "Wuse II", city: "Abuja", state: "FCT", lat: 9.08, lng: 7.47, createdAt: now - 19 * 60_000, status: "new", channel: "USSD" },
-    { id: "INC-2039", type: "fire", postcode: "LA1 4KJ", area: "Ikeja GRA", city: "Ikeja", state: "Lagos", lat: 6.58, lng: 3.35, createdAt: now - 48 * 60_000, status: "resolved", channel: "USSD" },
+    {
+      id: "INC-2041",
+      type: "security",
+      postcode: "KN3 2SB",
+      area: "Sabon Gari",
+      city: "Kano",
+      state: "Kano",
+      lat: 12.01,
+      lng: 8.53,
+      createdAt: now - 6 * 60_000,
+      status: "dispatched",
+      channel: "USSD",
+    },
+    {
+      id: "INC-2040",
+      type: "medical",
+      postcode: "FC2 9WS",
+      area: "Wuse II",
+      city: "Abuja",
+      state: "FCT",
+      lat: 9.08,
+      lng: 7.47,
+      createdAt: now - 19 * 60_000,
+      status: "new",
+      channel: "USSD",
+    },
+    {
+      id: "INC-2039",
+      type: "fire",
+      postcode: "LA1 4KJ",
+      area: "Ikeja GRA",
+      city: "Ikeja",
+      state: "Lagos",
+      lat: 6.58,
+      lng: 3.35,
+      createdAt: now - 48 * 60_000,
+      status: "resolved",
+      channel: "USSD",
+    },
   ];
 }
 
@@ -76,7 +112,9 @@ export function useIncidents(): Incident[] {
   return useSyncExternalStore(subscribe, load, () => EMPTY);
 }
 
-export function createIncident(input: Omit<Incident, "id" | "createdAt" | "status" | "channel">): Incident {
+export function createIncident(
+  input: Omit<Incident, "id" | "createdAt" | "status" | "channel">,
+): Incident {
   const current = load();
   const maxId = current.reduce((m, i) => Math.max(m, Number(i.id.split("-")[1]) || 0), 2000);
   const incident: Incident = {

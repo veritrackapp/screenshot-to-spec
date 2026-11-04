@@ -49,14 +49,21 @@ export function CheckoutForm({
   const pick = (s: SamplePostcode) => {
     setPicked(s.postcode);
     setPostcodeError(null);
-    setValues({ fullName: "Adaeze Okafor", phone: "0803 555 0142", postcode: s.postcode, ...s.address });
+    setValues({
+      fullName: "Adaeze Okafor",
+      phone: "0803 555 0142",
+      postcode: s.postcode,
+      ...s.address,
+    });
   };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!values.postcode.trim()) return setPostcodeError("Enter a postcode.");
     if (!isValidPostcodeFormat(values.postcode)) {
-      return setPostcodeError("Use the format two letters, digit, digit, two letters — e.g. LA1 4KJ.");
+      return setPostcodeError(
+        "Use the format two letters, digit, digit, two letters — e.g. LA1 4KJ.",
+      );
     }
     onSubmit(values);
   };
@@ -69,10 +76,22 @@ export function CheckoutForm({
         <form onSubmit={handleSubmit} className="space-y-5" noValidate>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field id="fullName" label="Full name">
-              <Input id="fullName" value={values.fullName} onChange={set("fullName")} autoComplete="name" required />
+              <Input
+                id="fullName"
+                value={values.fullName}
+                onChange={set("fullName")}
+                autoComplete="name"
+                required
+              />
             </Field>
             <Field id="phone" label="Phone number">
-              <Input id="phone" value={values.phone} onChange={set("phone")} autoComplete="tel" inputMode="tel" />
+              <Input
+                id="phone"
+                value={values.phone}
+                onChange={set("phone")}
+                autoComplete="tel"
+                inputMode="tel"
+              />
             </Field>
           </div>
 
@@ -90,7 +109,12 @@ export function CheckoutForm({
           </Field>
 
           <Field id="street" label="Street address">
-            <Input id="street" value={values.street} onChange={set("street")} autoComplete="address-line1" />
+            <Input
+              id="street"
+              value={values.street}
+              onChange={set("street")}
+              autoComplete="address-line1"
+            />
           </Field>
 
           <div className="grid gap-4 sm:grid-cols-3">
@@ -98,10 +122,20 @@ export function CheckoutForm({
               <Input id="area" value={values.area} onChange={set("area")} />
             </Field>
             <Field id="city" label="City">
-              <Input id="city" value={values.city} onChange={set("city")} autoComplete="address-level2" />
+              <Input
+                id="city"
+                value={values.city}
+                onChange={set("city")}
+                autoComplete="address-level2"
+              />
             </Field>
             <Field id="state" label="State">
-              <Input id="state" value={values.state} onChange={set("state")} autoComplete="address-level1" />
+              <Input
+                id="state"
+                value={values.state}
+                onChange={set("state")}
+                autoComplete="address-level1"
+              />
             </Field>
           </div>
 

@@ -21,7 +21,14 @@ function StatusBar() {
 export function PhoneScreen({ state }: { state: PhoneState }) {
   const textMode = isTextStep(state);
   const left = state.mode === "session" || state.mode === "idle" ? "Clear" : "";
-  const right = state.mode === "ended" ? "OK" : state.mode === "session" ? "Send" : state.mode === "idle" && state.buffer ? "Call" : "";
+  const right =
+    state.mode === "ended"
+      ? "OK"
+      : state.mode === "session"
+        ? "Send"
+        : state.mode === "idle" && state.buffer
+          ? "Call"
+          : "";
 
   return (
     <div className="lcd-text flex h-56 flex-col rounded-md bg-phone-screen px-3 py-2 text-[12px] leading-snug shadow-[inset_0_2px_6px_oklch(0_0_0/0.25)]">
@@ -29,7 +36,9 @@ export function PhoneScreen({ state }: { state: PhoneState }) {
       <div className="mt-2 flex-1 overflow-hidden" aria-live="polite">
         {state.mode === "idle" &&
           (state.buffer ? (
-            <p className="mt-10 break-all text-right text-2xl font-semibold tracking-wider">{state.buffer}</p>
+            <p className="mt-10 break-all text-right text-2xl font-semibold tracking-wider">
+              {state.buffer}
+            </p>
           ) : (
             <div className="mt-8 text-center">
               <p className="text-base font-semibold">TrustPost</p>
@@ -52,7 +61,11 @@ export function PhoneScreen({ state }: { state: PhoneState }) {
                 {state.buffer}
                 <span className="animate-blink">_</span>
               </span>
-              {textMode && <span className="ml-auto rounded-sm border border-phone-screen-ink px-1 text-[9px]">ABC</span>}
+              {textMode && (
+                <span className="ml-auto rounded-sm border border-phone-screen-ink px-1 text-[9px]">
+                  ABC
+                </span>
+              )}
             </div>
           </div>
         )}

@@ -66,7 +66,10 @@ function RespondersPage() {
     if (arrived.length) setFreshIds((s) => new Set([...s, ...arrived.map((i) => i.id)]));
   }, [incidents]);
 
-  const sorted = useMemo(() => [...incidents].sort((a, b) => b.createdAt - a.createdAt), [incidents]);
+  const sorted = useMemo(
+    () => [...incidents].sort((a, b) => b.createdAt - a.createdAt),
+    [incidents],
+  );
   const visible = filter === "all" ? sorted : sorted.filter((i) => i.status === filter);
   const count = (s: IncidentStatus) => incidents.filter((i) => i.status === s).length;
 

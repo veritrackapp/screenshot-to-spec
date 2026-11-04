@@ -24,7 +24,9 @@ export function HowItWorks() {
     <section className="bg-soft">
       <div className="mx-auto max-w-7xl space-y-12 px-4 py-20 sm:px-6 lg:py-28">
         <div className="mx-auto max-w-2xl space-y-3 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">How it works</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+            How it works
+          </p>
           <h2 className="text-3xl font-semibold sm:text-4xl">Three steps, one API call</h2>
         </div>
         <div className="grid gap-5 md:grid-cols-3">
@@ -35,7 +37,9 @@ export function HowItWorks() {
                   <span className="grid size-11 place-items-center rounded-xl bg-primary text-primary-foreground">
                     <Icon className="size-5" aria-hidden />
                   </span>
-                  <span className="font-display text-5xl font-semibold text-secondary">0{i + 1}</span>
+                  <span className="font-display text-5xl font-semibold text-secondary">
+                    0{i + 1}
+                  </span>
                 </div>
                 <h3 className="text-xl font-semibold">{title}</h3>
                 <p className="text-muted-foreground">{body}</p>
