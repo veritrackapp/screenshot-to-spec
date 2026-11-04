@@ -12,6 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as EmergencyRouteImport } from './routes/emergency'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as RespondersRouteImport } from './routes/responders'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,35 +31,71 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmergencyRoute = EmergencyRouteImport.update({
+  id: '/emergency',
+  path: '/emergency',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RespondersRoute = RespondersRouteImport.update({
+  id: '/responders',
+  path: '/responders',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/checkout': typeof CheckoutRoute
   '/dashboard': typeof DashboardRoute
+  '/emergency': typeof EmergencyRoute
+  '/privacy': typeof PrivacyRoute
+  '/responders': typeof RespondersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/checkout': typeof CheckoutRoute
   '/dashboard': typeof DashboardRoute
+  '/emergency': typeof EmergencyRoute
+  '/privacy': typeof PrivacyRoute
+  '/responders': typeof RespondersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/checkout': typeof CheckoutRoute
   '/dashboard': typeof DashboardRoute
+  '/emergency': typeof EmergencyRoute
+  '/privacy': typeof PrivacyRoute
+  '/responders': typeof RespondersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/checkout' | '/dashboard'
+  fullPaths:
+    '/' | '/checkout' | '/dashboard' | '/emergency' | '/privacy' | '/responders'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/checkout' | '/dashboard'
-  id: '__root__' | '/' | '/checkout' | '/dashboard'
+  to:
+    '/' | '/checkout' | '/dashboard' | '/emergency' | '/privacy' | '/responders'
+  id:
+    | '__root__'
+    | '/'
+    | '/checkout'
+    | '/dashboard'
+    | '/emergency'
+    | '/privacy'
+    | '/responders'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CheckoutRoute: typeof CheckoutRoute
   DashboardRoute: typeof DashboardRoute
+  EmergencyRoute: typeof EmergencyRoute
+  PrivacyRoute: typeof PrivacyRoute
+  RespondersRoute: typeof RespondersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +121,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/emergency': {
+      id: '/emergency'
+      path: '/emergency'
+      fullPath: '/emergency'
+      preLoaderRoute: typeof EmergencyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/responders': {
+      id: '/responders'
+      path: '/responders'
+      fullPath: '/responders'
+      preLoaderRoute: typeof RespondersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +149,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CheckoutRoute: CheckoutRoute,
   DashboardRoute: DashboardRoute,
+  EmergencyRoute: EmergencyRoute,
+  PrivacyRoute: PrivacyRoute,
+  RespondersRoute: RespondersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
