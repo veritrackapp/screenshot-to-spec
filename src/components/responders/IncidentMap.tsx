@@ -28,7 +28,7 @@ export function IncidentMap({
   onSelect,
 }: {
   incidents: Incident[];
-  selectedId?: string;
+  selectedId?: string | undefined;
   onSelect: (id: string) => void;
 }) {
   const selected = incidents.find((i) => i.id === selectedId);

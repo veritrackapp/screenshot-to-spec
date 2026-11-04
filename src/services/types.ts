@@ -34,7 +34,7 @@ export interface ValidationResult {
   status: VerificationStatus;
   score: number;
   reasons: ValidationReason[];
-  matched?: Pick<PostcodeRecord, "area" | "city" | "state">;
+  matched?: Pick<PostcodeRecord, "area" | "city" | "state"> | undefined;
   checkedAt: string;
 }
 

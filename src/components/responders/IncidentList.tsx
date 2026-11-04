@@ -15,7 +15,7 @@ export function IncidentList({
 }: {
   incidents: Incident[];
   now: number;
-  selectedId?: string;
+  selectedId?: string | undefined;
   freshIds: Set<string>;
   onSelect: (id: string) => void;
 }) {

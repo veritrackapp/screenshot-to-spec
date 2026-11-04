@@ -12,7 +12,7 @@ export function SamplePicker({
   selected,
   onPick,
 }: {
-  selected?: string;
+  selected?: string | undefined;
   onPick: (sample: SamplePostcode) => void;
 }) {
   return (

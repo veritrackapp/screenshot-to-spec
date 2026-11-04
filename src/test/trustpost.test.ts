@@ -22,7 +22,7 @@ describe("address scoring", () => {
   it("marks an unknown postcode as high risk with a reason", () => {
     const r = scoreAddress("ZZ9 0XX", { street: "1 A St", area: "", city: "Lagos", state: "Lagos" });
     expect(r.status).toBe("high_risk");
-    expect(r.reasons[0].label).toMatch(/not found/i);
+    expect(r.reasons[0]?.label).toMatch(/not found/i);
   });
 
   it("maps score bands to statuses", () => {
