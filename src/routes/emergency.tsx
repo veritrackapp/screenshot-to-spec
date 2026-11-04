@@ -12,7 +12,7 @@ import { INCIDENT_LABEL, USSD_CODE, type UssdIncidentEffect } from "@/lib/ussd";
 import { createIncident } from "@/store/incidents";
 import { SAMPLE_POSTCODES } from "@/services/postcodeService";
 
-const title = "Emergency mode — TrustPost USSD simulator";
+const title = "Emergency mode — Adrex USSD simulator";
 const description =
   "Dial *384# on a simulated feature phone to report a medical, fire or security emergency by postcode, or find the nearest hospital and police.";
 
@@ -88,7 +88,7 @@ function EmergencyPage() {
       <PageHeader
         eyebrow="Emergency mode"
         title="Help from any phone, no data needed"
-        description="Most Nigerians in an emergency have a basic phone and no internet. TrustPost works over USSD, so a postcode is all responders need."
+        description="Most Nigerians in an emergency have a basic phone and no internet. Adrex works over USSD, so a postcode is all responders need."
         actions={
           <Button asChild variant="outline">
             <Link to="/responders">

@@ -81,12 +81,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "TrustPost — Address trust for Nigeria" },
+      { title: "Adrex — Address trust for Nigeria" },
       {
         name: "description",
         content: "Validate, score and report Nigerian addresses on the national postcode layer.",
       },
-      { property: "og:title", content: "TrustPost — Address trust for Nigeria" },
+      { property: "og:title", content: "Adrex — Address trust for Nigeria" },
       {
         property: "og:description",
         content: "Validate, score and report Nigerian addresses on the national postcode layer.",
@@ -105,7 +105,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", type: "image/png", href: "/favicon.png" },
     ],
   }),
   shellComponent: RootShell,

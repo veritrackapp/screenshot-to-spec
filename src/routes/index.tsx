@@ -4,7 +4,7 @@ import { Hero } from "@/components/landing/Hero";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { ProblemSection } from "@/components/landing/ProblemSection";
 
-const title = "TrustPost — One trusted address layer for Nigeria";
+const title = "Adrex — One trusted address layer for Nigeria";
 const description =
   "Validate and score Nigerian addresses with the national postcode to cut failed deliveries, fake KYC addresses and slow emergency response.";
 

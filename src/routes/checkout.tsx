@@ -12,9 +12,9 @@ import {
 import { PageHeader, PageShell } from "@/components/layout/PageHeader";
 import { validateAddress } from "@/services/postcodeService";
 
-const title = "Checkout demo — TrustPost";
+const title = "Checkout demo — Adrex";
 const description =
-  "Try TrustPost in a sample store checkout: enter a Nigerian postcode and get a Verified, Needs review or High risk score with reasons.";
+  "Try Adrex in a sample store checkout: enter a Nigerian postcode and get a Verified, Needs review or High risk score with reasons.";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -49,7 +49,7 @@ function CheckoutPage() {
       <PageHeader
         eyebrow="Checkout demo"
         title="Check the address before you ship"
-        description="A sample store checkout. When the order is placed, TrustPost scores the delivery address against the national postcode."
+        description="A sample store checkout. When the order is placed, Adrex scores the delivery address against the national postcode."
       />
 
       <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">

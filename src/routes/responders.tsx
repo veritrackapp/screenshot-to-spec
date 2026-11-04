@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { resetIncidents, useIncidents, type IncidentStatus } from "@/store/incidents";
 
-const title = "Responder console — TrustPost";
+const title = "Responder console — Adrex";
 const description =
   "Live list of USSD emergency reports with postcode, type and time. Mark incidents dispatched or resolved.";
 

@@ -31,7 +31,7 @@ export interface UssdReply {
 }
 
 export const MENU_TEXT =
-  "CON TrustPost Emergency\n1. Report emergency\n2. Nearest hospital\n3. Nearest police\n0. Exit";
+  "CON Adrex Emergency\n1. Report emergency\n2. Nearest hospital\n3. Nearest police\n0. Exit";
 
 const TYPE_BY_KEY: Record<string, IncidentType> = { "1": "medical", "2": "fire", "3": "security" };
 
@@ -73,7 +73,7 @@ export function respond(
         return { session: { step: "hospital_postcode" }, response: "CON Enter your postcode:" };
       if (input === "3")
         return { session: { step: "police_postcode" }, response: "CON Enter your postcode:" };
-      if (input === "0") return { session: null, response: "END Thank you for using TrustPost." };
+      if (input === "0") return { session: null, response: "END Thank you for using Adrex." };
       return { session, response: `CON Invalid choice.\n${MENU_TEXT.slice(4)}` };
     }
 
