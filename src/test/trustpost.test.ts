@@ -57,13 +57,13 @@ describe("USSD *384# flow", () => {
     let r = dial("*384#");
     r = respond(r.session!, "1");
     expect(r.response).toMatch(/^CON Enter your postcode/);
-    r = respond(r.session!, "LA14KJ");
+    r = respond(r.session!, "FC 02 A09 DB 09");
     expect(r.response).toMatch(/^CON .*Medical/s);
     r = respond(r.session!, "1");
     expect(isEnd(r.response)).toBe(true);
     expect(r.session).toBeNull();
     expect(r.incident?.type).toBe("medical");
-    expect(r.incident?.record.postcode).toBe("LA1 4KJ");
+    expect(r.incident?.record.postcode).toBe("FC 02 A09 DB 09");
   });
 
   it("re-prompts on an unknown postcode without ending", () => {

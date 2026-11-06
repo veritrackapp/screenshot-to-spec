@@ -10,15 +10,23 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as EmergencyRouteImport } from './routes/emergency'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RespondersRouteImport } from './routes/responders'
+import { Route as ApiLookupRouteImport } from './routes/api/lookup'
+import { Route as ApiUssdRouteImport } from './routes/api/ussd'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutRoute = CheckoutRouteImport.update({
@@ -46,56 +54,97 @@ const RespondersRoute = RespondersRouteImport.update({
   path: '/responders',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiLookupRoute = ApiLookupRouteImport.update({
+  id: '/api/lookup',
+  path: '/api/lookup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiUssdRoute = ApiUssdRouteImport.update({
+  id: '/api/ussd',
+  path: '/api/ussd',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/checkout': typeof CheckoutRoute
   '/dashboard': typeof DashboardRoute
   '/emergency': typeof EmergencyRoute
   '/privacy': typeof PrivacyRoute
   '/responders': typeof RespondersRoute
+  '/api/lookup': typeof ApiLookupRoute
+  '/api/ussd': typeof ApiUssdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/checkout': typeof CheckoutRoute
   '/dashboard': typeof DashboardRoute
   '/emergency': typeof EmergencyRoute
   '/privacy': typeof PrivacyRoute
   '/responders': typeof RespondersRoute
+  '/api/lookup': typeof ApiLookupRoute
+  '/api/ussd': typeof ApiUssdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/checkout': typeof CheckoutRoute
   '/dashboard': typeof DashboardRoute
   '/emergency': typeof EmergencyRoute
   '/privacy': typeof PrivacyRoute
   '/responders': typeof RespondersRoute
+  '/api/lookup': typeof ApiLookupRoute
+  '/api/ussd': typeof ApiUssdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/checkout' | '/dashboard' | '/emergency' | '/privacy' | '/responders'
-  fileRoutesByTo: FileRoutesByTo
-  to:
-    '/' | '/checkout' | '/dashboard' | '/emergency' | '/privacy' | '/responders'
-  id:
-    | '__root__'
     | '/'
+    | '/account'
     | '/checkout'
     | '/dashboard'
     | '/emergency'
     | '/privacy'
     | '/responders'
+    | '/api/lookup'
+    | '/api/ussd'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/account'
+    | '/checkout'
+    | '/dashboard'
+    | '/emergency'
+    | '/privacy'
+    | '/responders'
+    | '/api/lookup'
+    | '/api/ussd'
+  id:
+    | '__root__'
+    | '/'
+    | '/account'
+    | '/checkout'
+    | '/dashboard'
+    | '/emergency'
+    | '/privacy'
+    | '/responders'
+    | '/api/lookup'
+    | '/api/ussd'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountRoute: typeof AccountRoute
   CheckoutRoute: typeof CheckoutRoute
   DashboardRoute: typeof DashboardRoute
   EmergencyRoute: typeof EmergencyRoute
   PrivacyRoute: typeof PrivacyRoute
   RespondersRoute: typeof RespondersRoute
+  ApiLookupRoute: typeof ApiLookupRoute
+  ApiUssdRoute: typeof ApiUssdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -105,6 +154,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/checkout': {
@@ -142,16 +198,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RespondersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/lookup': {
+      id: '/api/lookup'
+      path: '/api/lookup'
+      fullPath: '/api/lookup'
+      preLoaderRoute: typeof ApiLookupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ussd': {
+      id: '/api/ussd'
+      path: '/api/ussd'
+      fullPath: '/api/ussd'
+      preLoaderRoute: typeof ApiUssdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountRoute: AccountRoute,
   CheckoutRoute: CheckoutRoute,
   DashboardRoute: DashboardRoute,
   EmergencyRoute: EmergencyRoute,
   PrivacyRoute: PrivacyRoute,
   RespondersRoute: RespondersRoute,
+  ApiLookupRoute: ApiLookupRoute,
+  ApiUssdRoute: ApiUssdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -16,9 +16,9 @@ export function HeroVisual() {
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Postcode
             </p>
-            <p className="mt-1 font-mono text-2xl font-semibold">LA1 4KJ</p>
+            <p className="mt-1 font-mono text-2xl font-semibold">FC 02 A09 DB 09</p>
             <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
-              <MapPin className="size-3.5" aria-hidden /> Ikeja GRA, Lagos
+              <MapPin className="size-3.5" aria-hidden /> Wuse II, Abuja
             </p>
           </div>
           <StatusBadge status="verified" />

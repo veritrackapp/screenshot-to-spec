@@ -1,36 +1,37 @@
 import type { AddressInput, AreaFailureRate, PostcodeRecord, RecentCheck } from "./types";
 
 /**
- * Mock national postcode registry. Replace with the real
- * National Digital Alphanumeric Postcode API in postcodeService.ts.
+ * DEMO registry. These are placeholder codes in NIPOST's 11-character shape
+ * (State, LGA, District, Area, Building). Only the "FC" (FCT) prefix is confirmed;
+ * the others are made up for the demo. Replace with real codes from the Postcode API.
  */
 export const POSTCODE_REGISTRY: PostcodeRecord[] = [
   {
-    postcode: "LA1 4KJ",
-    area: "Ikeja GRA",
-    city: "Ikeja",
-    state: "Lagos",
-    lat: 6.58,
-    lng: 3.35,
-    failureHistory: "low",
-    identityFlagged: false,
-    nearestHospital: { name: "LASUTH Ikeja", distanceKm: 2.1, phone: "0800 112 000" },
-    nearestPolice: { name: "Alausa Police Division", distanceKm: 1.4, phone: "0800 767 000" },
-  },
-  {
-    postcode: "FC2 9WS",
+    postcode: "FC 02 A09 DB 09",
     area: "Wuse II",
     city: "Abuja",
     state: "FCT",
     lat: 9.08,
     lng: 7.47,
-    failureHistory: "medium",
+    failureHistory: "low",
     identityFlagged: false,
     nearestHospital: { name: "Wuse District Hospital", distanceKm: 1.2, phone: "0800 112 001" },
     nearestPolice: { name: "Wuse Police Division", distanceKm: 0.9, phone: "0800 767 001" },
   },
   {
-    postcode: "RV7 1PH",
+    postcode: "FC 05 B12 KD 03",
+    area: "Garki",
+    city: "Abuja",
+    state: "FCT",
+    lat: 9.03,
+    lng: 7.49,
+    failureHistory: "medium",
+    identityFlagged: false,
+    nearestHospital: { name: "Garki Hospital", distanceKm: 1.6, phone: "0800 112 006" },
+    nearestPolice: { name: "Garki Police Division", distanceKm: 1.0, phone: "0800 767 006" },
+  },
+  {
+    postcode: "RV 03 C07 PH 11",
     area: "GRA Phase 2",
     city: "Port Harcourt",
     state: "Rivers",
@@ -42,7 +43,7 @@ export const POSTCODE_REGISTRY: PostcodeRecord[] = [
     nearestPolice: { name: "GRA Police Division", distanceKm: 1.8, phone: "0800 767 002" },
   },
   {
-    postcode: "KN3 2SB",
+    postcode: "KN 01 D04 SG 22",
     area: "Sabon Gari",
     city: "Kano",
     state: "Kano",
@@ -54,7 +55,7 @@ export const POSTCODE_REGISTRY: PostcodeRecord[] = [
     nearestPolice: { name: "Sabon Gari Police Division", distanceKm: 0.7, phone: "0800 767 003" },
   },
   {
-    postcode: "OY5 3XB",
+    postcode: "OY 04 E02 BD 15",
     area: "Bodija",
     city: "Ibadan",
     state: "Oyo",
@@ -66,7 +67,7 @@ export const POSTCODE_REGISTRY: PostcodeRecord[] = [
     nearestPolice: { name: "Bodija Police Division", distanceKm: 1.1, phone: "0800 767 004" },
   },
   {
-    postcode: "EN4 6GT",
+    postcode: "EN 02 F06 IL 08",
     area: "Independence Layout",
     city: "Enugu",
     state: "Enugu",
@@ -89,19 +90,19 @@ export interface SamplePostcode {
 /** Five demo inputs for the checkout, each producing a different outcome. */
 export const SAMPLE_POSTCODES: SamplePostcode[] = [
   {
-    postcode: "LA1 4KJ",
-    label: "Clean match, Ikeja",
-    expected: "Verified",
-    address: { street: "14 Isaac John Street", area: "Ikeja GRA", city: "Ikeja", state: "Lagos" },
-  },
-  {
-    postcode: "FC2 9WS",
-    label: "Good match, some failed drops",
+    postcode: "FC 02 A09 DB 09",
+    label: "Clean match, Wuse II",
     expected: "Verified",
     address: { street: "7 Aminu Kano Crescent", area: "Wuse II", city: "Abuja", state: "FCT" },
   },
   {
-    postcode: "RV7 1PH",
+    postcode: "FC 05 B12 KD 03",
+    label: "Good match, some failed drops",
+    expected: "Verified",
+    address: { street: "12 Gimbiya Street", area: "Garki", city: "Abuja", state: "FCT" },
+  },
+  {
+    postcode: "RV 03 C07 PH 11",
     label: "City doesn't match postcode",
     expected: "Needs review",
     address: {
@@ -112,13 +113,13 @@ export const SAMPLE_POSTCODES: SamplePostcode[] = [
     },
   },
   {
-    postcode: "KN3 2SB",
+    postcode: "KN 01 D04 SG 22",
     label: "Flagged area, vague street",
     expected: "High risk",
     address: { street: "Near the big mosque", area: "Sabon Gari", city: "Kano", state: "Kano" },
   },
   {
-    postcode: "ZZ9 0XX",
+    postcode: "ZZ 99 Z99 ZZ 99",
     label: "Postcode doesn't exist",
     expected: "High risk",
     address: { street: "3 Unknown Close", area: "Lekki", city: "Lekki", state: "Lagos" },
@@ -136,79 +137,16 @@ export const AREA_FAILURE_RATES: AreaFailureRate[] = [
   { area: "Ikeja GRA", failureRate: 2.8 },
 ];
 
+/** Sample data only. Merchant names are generic placeholders. */
 export const RECENT_CHECKS: RecentCheck[] = [
-  {
-    id: "CHK-90412",
-    merchant: "Jumia Express",
-    postcode: "LA1 4KJ",
-    area: "Ikeja GRA",
-    score: 100,
-    status: "verified",
-    minutesAgo: 1,
-  },
-  {
-    id: "CHK-90411",
-    merchant: "Kuda Bank KYC",
-    postcode: "KN3 2SB",
-    area: "Sabon Gari",
-    score: 35,
-    status: "high_risk",
-    minutesAgo: 3,
-  },
-  {
-    id: "CHK-90410",
-    merchant: "Chowdeck",
-    postcode: "FC2 9WS",
-    area: "Wuse II",
-    score: 88,
-    status: "verified",
-    minutesAgo: 6,
-  },
-  {
-    id: "CHK-90409",
-    merchant: "Konga",
-    postcode: "RV7 1PH",
-    area: "GRA Phase 2",
-    score: 68,
-    status: "review",
-    minutesAgo: 9,
-  },
-  {
-    id: "CHK-90408",
-    merchant: "GIG Logistics",
-    postcode: "OY5 3XB",
-    area: "Bodija",
-    score: 95,
-    status: "verified",
-    minutesAgo: 14,
-  },
-  {
-    id: "CHK-90407",
-    merchant: "Moniepoint KYC",
-    postcode: "ZZ9 0XX",
-    area: "—",
-    score: 10,
-    status: "high_risk",
-    minutesAgo: 21,
-  },
-  {
-    id: "CHK-90406",
-    merchant: "Jumia Express",
-    postcode: "EN4 6GT",
-    area: "Independence Layout",
-    score: 92,
-    status: "verified",
-    minutesAgo: 27,
-  },
-  {
-    id: "CHK-90405",
-    merchant: "Kwik Delivery",
-    postcode: "RV7 1PH",
-    area: "GRA Phase 2",
-    score: 61,
-    status: "review",
-    minutesAgo: 34,
-  },
+  { id: "CHK-90412", merchant: "Online Store", postcode: "FC 02 A09 DB 09", area: "Wuse II", score: 100, status: "verified", minutesAgo: 1 },
+  { id: "CHK-90411", merchant: "Lending App (KYC)", postcode: "KN 01 D04 SG 22", area: "Sabon Gari", score: 35, status: "high_risk", minutesAgo: 3 },
+  { id: "CHK-90410", merchant: "Food Delivery App", postcode: "FC 05 B12 KD 03", area: "Garki", score: 88, status: "verified", minutesAgo: 6 },
+  { id: "CHK-90409", merchant: "Marketplace", postcode: "RV 03 C07 PH 11", area: "GRA Phase 2", score: 68, status: "review", minutesAgo: 9 },
+  { id: "CHK-90408", merchant: "Logistics Co.", postcode: "OY 04 E02 BD 15", area: "Bodija", score: 95, status: "verified", minutesAgo: 14 },
+  { id: "CHK-90407", merchant: "Wallet App (KYC)", postcode: "ZZ 99 Z99 ZZ 99", area: "—", score: 10, status: "high_risk", minutesAgo: 21 },
+  { id: "CHK-90406", merchant: "Online Store", postcode: "EN 02 F06 IL 08", area: "Independence Layout", score: 92, status: "verified", minutesAgo: 27 },
+  { id: "CHK-90405", merchant: "Courier Co.", postcode: "RV 03 C07 PH 11", area: "GRA Phase 2", score: 61, status: "review", minutesAgo: 34 },
 ];
 
 /** Average cost of one failed delivery attempt (re-dispatch, return, support). */

@@ -62,7 +62,7 @@ export function CheckoutForm({
     if (!values.postcode.trim()) return setPostcodeError("Enter a postcode.");
     if (!isValidPostcodeFormat(values.postcode)) {
       return setPostcodeError(
-        "Use the format two letters, digit, digit, two letters — e.g. LA1 4KJ.",
+        "Use the 11-character NIPOST format, e.g. FC 02 A09 DB 09.",
       );
     }
     onSubmit(values);
@@ -100,11 +100,11 @@ export function CheckoutForm({
               id="postcode"
               value={values.postcode}
               onChange={set("postcode")}
-              placeholder="LA1 4KJ"
+              placeholder="FC 02 A09 DB 09 "
               className="font-mono uppercase tracking-wider"
               aria-invalid={!!postcodeError}
               aria-describedby={postcodeError ? "postcode-error" : undefined}
-              maxLength={8}
+              maxLength={15}
             />
           </Field>
 

@@ -1,9 +1,9 @@
 /**
  * Adrex data access layer.
  *
- * Every read the UI makes goes through this module. It is backed by mock
- * data today; swap the function bodies for calls to the National Digital
- * Alphanumeric Postcode API without touching the pages.
+ * Every read the UI makes goes through this module. Postcode lookups call the
+ * live National Digital Alphanumeric Postcode API through /api/lookup and fall
+ * back to the demo registry when the API is unreachable or has no record.
  */
 import {
   AREA_FAILURE_RATES,
@@ -38,19 +38,43 @@ export const VERIFIED_MIN_SCORE = 75;
 /** Score at or above which an address Needs review (below is High risk). */
 export const REVIEW_MIN_SCORE = 45;
 
-const POSTCODE_PATTERN = /^[A-Z]{2}\d\d[A-Z]{2}$/;
+/** NIPOST codes are 11 characters: State, LGA, District, Area, Building. */
+const POSTCODE_PATTERN = /^[A-Z0-9]{11}$/;
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-/** Uppercases and strips spaces / punctuation: "la1-4kj" -> "LA14KJ". */
+/** Uppercases and strips spaces / punctuation: "fc-02 a09 db09" -> "FC02A09DB09". */
 export function normalizePostcode(input: string): string {
   return input.toUpperCase().replace(/[^A-Z0-9]/g, "");
 }
 
-/** "LA14KJ" -> "LA1 4KJ". Returns the input unchanged if it is not 6 chars. */
+/** "FC02A09DB09" -> "FC 02 A09 DB 09". Returns the input unchanged if it is not 11 chars. */
 export function formatPostcode(input: string): string {
   const n = normalizePostcode(input);
-  return n.length === 6 ? `${n.slice(0, 3)} ${n.slice(3)}` : n;
+  return n.length === 11
+    ? `${n.slice(0, 2)} ${n.slice(2, 4)} ${n.slice(4, 7)} ${n.slice(7, 9)} ${n.slice(9)}`
+    : n;
+}
+
+export interface PostcodeParts {
+  state: string;
+  lga: string;
+  district: string;
+  area: string;
+  building: string;
+}
+
+/** "FC02A09DB09" -> { state: "FC", lga: "02", district: "A09", area: "DB", building: "09" } */
+export function parsePostcode(input: string): PostcodeParts | undefined {
+  const n = normalizePostcode(input);
+  if (n.length !== 11) return undefined;
+  return {
+    state: n.slice(0, 2),
+    lga: n.slice(2, 4),
+    district: n.slice(4, 7),
+    area: n.slice(7, 9),
+    building: n.slice(9),
+  };
 }
 
 export function isValidPostcodeFormat(input: string): boolean {
@@ -71,8 +95,11 @@ export function statusForScore(score: number): VerificationStatus {
 const same = (a: string, b: string) => a.trim().toLowerCase() === b.trim().toLowerCase();
 
 /** Pure scoring used by validateAddress. Exported for tests. */
-export function scoreAddress(postcode: string, address: AddressInput): ValidationResult {
-  const record = findPostcode(postcode);
+export function scoreAddress(
+  postcode: string,
+  address: AddressInput,
+  record?: PostcodeRecord,
+): ValidationResult {
   const reasons: ValidationReason[] = [];
   let score = 0;
 
@@ -139,6 +166,53 @@ export function scoreAddress(postcode: string, address: AddressInput): Validatio
   };
 }
 
+/**
+ * Asks the live postcode API (through our /api/lookup route) about a code.
+ * Falls back to the demo registry if the API is unreachable or has no record.
+ * The browser console shows which path was used.
+ */
+async function fetchRecord(postcode: string): Promise<PostcodeRecord | undefined> {
+  const own = findPostcode(postcode); // Adrex's demo registry and delivery signals
+  try {
+    const res = await fetch(
+      `/api/lookup?postcode=${encodeURIComponent(normalizePostcode(postcode))}`,
+    );
+    console.info("[Adrex] /api/lookup responded with HTTP", res.status);
+    if (res.status === 429) {
+      throw new PostcodeServiceError(
+        "You've used your 5 free checks. Sign up to keep checking addresses.",
+      );
+    }
+    if (!res.ok) throw new Error(`lookup route returned ${res.status}`);
+
+    const api = await res.json();
+    const data = api?.body?.data;
+    console.info("[Adrex] postcode API says:", data);
+    if (!data) throw new Error("no data in the response");
+
+    // The API answers 200 even for unknown codes: valid=false means "no record".
+    if (data.valid !== true) return own;
+
+    const none = { name: "Not available yet", distanceKm: 0, phone: "" };
+    return {
+      postcode: data.postcode ?? normalizePostcode(postcode),
+      area: data.area ?? own?.area ?? "",
+      city: data.city ?? own?.city ?? "",
+      state: data.state ?? own?.state ?? "",
+      lat: data.lat ?? own?.lat ?? 0,
+      lng: data.lng ?? own?.lng ?? 0,
+      failureHistory: own?.failureHistory ?? "low",
+      identityFlagged: own?.identityFlagged ?? false,
+      nearestHospital: own?.nearestHospital ?? none,
+      nearestPolice: own?.nearestPolice ?? none,
+    };
+  } catch (err) {
+    if (err instanceof PostcodeServiceError) throw err;
+    console.warn("[Adrex] live lookup failed, using demo data:", err);
+    return own;
+  }
+}
+
 export async function validateAddress(
   postcode: string,
   address: AddressInput,
@@ -149,9 +223,10 @@ export async function validateAddress(
     throw new PostcodeServiceError("The postcode service didn't respond. Please try again.");
   }
   if (!isValidPostcodeFormat(postcode)) {
-    throw new PostcodeServiceError("That postcode isn't in a valid format (e.g. LA1 4KJ).");
+    throw new PostcodeServiceError("That postcode isn't in a valid format (e.g. FC 02 A09 DB 09).");
   }
-  return scoreAddress(postcode, address);
+  const record = await fetchRecord(postcode);
+  return scoreAddress(postcode, address, record);
 }
 
 // ---------- Dashboard ----------

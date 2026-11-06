@@ -57,7 +57,7 @@ function seed(): Incident[] {
     {
       id: "INC-2039",
       type: "fire",
-      postcode: "LA1 4KJ",
+      postcode: "FC 02 A09 DB 09",
       area: "Ikeja GRA",
       city: "Ikeja",
       state: "Lagos",
