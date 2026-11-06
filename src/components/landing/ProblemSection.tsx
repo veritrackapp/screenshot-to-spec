@@ -21,7 +21,7 @@ const problems = [
     Icon: Siren,
     title: "Slow emergency response",
     problem: "Callers struggle to describe where they are, and minutes are lost.",
-    solution: "Anyone on any phone can dial *384# and share a postcode responders can find.",
+    solution: "Anyone on any phone will be able to dial a short code and share a postcode responders can find (simulated in this demo).",
   },
 ];
 
