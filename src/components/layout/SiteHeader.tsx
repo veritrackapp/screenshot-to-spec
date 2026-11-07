@@ -40,7 +40,7 @@ export function SiteHeader() {
 
         <div className="hidden md:block">
           <Button asChild size="sm">
-            <Link to="/checkout">Try the demo</Link>
+            <Link to="/login">Merchant portal</Link>
           </Button>
         </div>
 

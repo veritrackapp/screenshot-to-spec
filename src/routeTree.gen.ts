@@ -14,6 +14,7 @@ import { Route as AccountRouteImport } from './routes/account'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as EmergencyRouteImport } from './routes/emergency'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RespondersRouteImport } from './routes/responders'
 import { Route as ApiLookupRouteImport } from './routes/api/lookup'
@@ -44,6 +45,11 @@ const EmergencyRoute = EmergencyRouteImport.update({
   path: '/emergency',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof CheckoutRoute
   '/dashboard': typeof DashboardRoute
   '/emergency': typeof EmergencyRoute
+  '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/responders': typeof RespondersRoute
   '/api/lookup': typeof ApiLookupRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRoute
   '/dashboard': typeof DashboardRoute
   '/emergency': typeof EmergencyRoute
+  '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/responders': typeof RespondersRoute
   '/api/lookup': typeof ApiLookupRoute
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/checkout': typeof CheckoutRoute
   '/dashboard': typeof DashboardRoute
   '/emergency': typeof EmergencyRoute
+  '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/responders': typeof RespondersRoute
   '/api/lookup': typeof ApiLookupRoute
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/dashboard'
     | '/emergency'
+    | '/login'
     | '/privacy'
     | '/responders'
     | '/api/lookup'
@@ -118,6 +128,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/dashboard'
     | '/emergency'
+    | '/login'
     | '/privacy'
     | '/responders'
     | '/api/lookup'
@@ -129,6 +140,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/dashboard'
     | '/emergency'
+    | '/login'
     | '/privacy'
     | '/responders'
     | '/api/lookup'
@@ -141,6 +153,7 @@ export interface RootRouteChildren {
   CheckoutRoute: typeof CheckoutRoute
   DashboardRoute: typeof DashboardRoute
   EmergencyRoute: typeof EmergencyRoute
+  LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
   RespondersRoute: typeof RespondersRoute
   ApiLookupRoute: typeof ApiLookupRoute
@@ -184,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmergencyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
@@ -221,6 +241,7 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutRoute: CheckoutRoute,
   DashboardRoute: DashboardRoute,
   EmergencyRoute: EmergencyRoute,
+  LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
   RespondersRoute: RespondersRoute,
   ApiLookupRoute: ApiLookupRoute,
