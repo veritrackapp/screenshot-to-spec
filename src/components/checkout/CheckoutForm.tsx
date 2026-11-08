@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { LocateButton } from "@/components/LocateButton";
 import { isValidPostcodeFormat } from "@/services/postcodeService";
 import type { AddressInput } from "@/services/types";
 import type { SamplePostcode } from "@/services/mockData";
@@ -61,9 +62,7 @@ export function CheckoutForm({
     e.preventDefault();
     if (!values.postcode.trim()) return setPostcodeError("Enter a postcode.");
     if (!isValidPostcodeFormat(values.postcode)) {
-      return setPostcodeError(
-        "Use the 11-character NIPOST format, e.g. FC 02 A09 DB 09.",
-      );
+      return setPostcodeError("Use the 11-character NIPOST format, e.g. FC 02 A09 DB 09.");
     }
     onSubmit(values);
   };
@@ -100,12 +99,13 @@ export function CheckoutForm({
               id="postcode"
               value={values.postcode}
               onChange={set("postcode")}
-              placeholder="FC 02 A09 DB 09 "
+              placeholder="FC 02 A09 DB 09"
               className="font-mono uppercase tracking-wider"
               aria-invalid={!!postcodeError}
               aria-describedby={postcodeError ? "postcode-error" : undefined}
               maxLength={15}
             />
+            <LocateButton onFound={(place) => setValues((v) => ({ ...v, ...place }))} />
           </Field>
 
           <Field id="street" label="Street address">

@@ -17,6 +17,7 @@ import { Route as EmergencyRouteImport } from './routes/emergency'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RespondersRouteImport } from './routes/responders'
+import { Route as ApiLocateRouteImport } from './routes/api/locate'
 import { Route as ApiLookupRouteImport } from './routes/api/lookup'
 import { Route as ApiUssdRouteImport } from './routes/api/ussd'
 
@@ -60,6 +61,11 @@ const RespondersRoute = RespondersRouteImport.update({
   path: '/responders',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiLocateRoute = ApiLocateRouteImport.update({
+  id: '/api/locate',
+  path: '/api/locate',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiLookupRoute = ApiLookupRouteImport.update({
   id: '/api/lookup',
   path: '/api/lookup',
@@ -80,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/responders': typeof RespondersRoute
+  '/api/locate': typeof ApiLocateRoute
   '/api/lookup': typeof ApiLookupRoute
   '/api/ussd': typeof ApiUssdRoute
 }
@@ -92,6 +99,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/responders': typeof RespondersRoute
+  '/api/locate': typeof ApiLocateRoute
   '/api/lookup': typeof ApiLookupRoute
   '/api/ussd': typeof ApiUssdRoute
 }
@@ -105,6 +113,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/responders': typeof RespondersRoute
+  '/api/locate': typeof ApiLocateRoute
   '/api/lookup': typeof ApiLookupRoute
   '/api/ussd': typeof ApiUssdRoute
 }
@@ -119,6 +128,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/privacy'
     | '/responders'
+    | '/api/locate'
     | '/api/lookup'
     | '/api/ussd'
   fileRoutesByTo: FileRoutesByTo
@@ -131,6 +141,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/privacy'
     | '/responders'
+    | '/api/locate'
     | '/api/lookup'
     | '/api/ussd'
   id:
@@ -143,6 +154,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/privacy'
     | '/responders'
+    | '/api/locate'
     | '/api/lookup'
     | '/api/ussd'
   fileRoutesById: FileRoutesById
@@ -156,6 +168,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
   RespondersRoute: typeof RespondersRoute
+  ApiLocateRoute: typeof ApiLocateRoute
   ApiLookupRoute: typeof ApiLookupRoute
   ApiUssdRoute: typeof ApiUssdRoute
 }
@@ -218,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RespondersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/locate': {
+      id: '/api/locate'
+      path: '/api/locate'
+      fullPath: '/api/locate'
+      preLoaderRoute: typeof ApiLocateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/lookup': {
       id: '/api/lookup'
       path: '/api/lookup'
@@ -244,6 +264,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
   RespondersRoute: RespondersRoute,
+  ApiLocateRoute: ApiLocateRoute,
   ApiLookupRoute: ApiLookupRoute,
   ApiUssdRoute: ApiUssdRoute,
 }
