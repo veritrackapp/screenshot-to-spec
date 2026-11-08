@@ -78,3 +78,44 @@ export async function signUp(email: string, password: string): Promise<{ signedI
 export function signOut() {
   save(null);
 }
+
+/** Sends the visitor to Google through Supabase. They come back to /login with tokens in the URL. */
+export function startGoogleSignIn() {
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    throw new Error("Sign-in is not configured on this site yet.");
+  }
+  const redirect = `${window.location.origin}/login`;
+  window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(redirect)}`;
+}
+
+/** Call on the login page. Finishes a Google sign-in when the URL hash carries the tokens. */
+export async function completeOAuthFromHash(): Promise<Session | null> {
+  if (typeof window === "undefined") return null;
+  const hash = window.location.hash.replace(/^#/, "");
+  if (!hash) return null;
+  const params = new URLSearchParams(hash);
+
+  const problem = params.get("error_description") ?? params.get("error");
+  if (problem) {
+    window.history.replaceState(null, "", window.location.pathname);
+    throw new Error(problem.replace(/\+/g, " "));
+  }
+
+  const accessToken = params.get("access_token");
+  if (!accessToken || !SUPABASE_URL || !SUPABASE_KEY) return null;
+
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${accessToken}` },
+  });
+  const user = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error("Google sign-in could not be completed. Please try again.");
+
+  const session: Session = {
+    accessToken,
+    email: user.email ?? "Google account",
+    expiresAt: Math.floor(Date.now() / 1000) + Number(params.get("expires_in") ?? 3600),
+  };
+  save(session);
+  window.history.replaceState(null, "", window.location.pathname);
+  return session;
+}
