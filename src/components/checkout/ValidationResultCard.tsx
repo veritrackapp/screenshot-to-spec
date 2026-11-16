@@ -108,6 +108,12 @@ export function ValidationResultCard({ result }: { result: ValidationResult }) {
                 {result.matched.area}, {result.matched.city}, {result.matched.state}
               </p>
             )}
+            {result.source === "sample" && (
+              <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-warning-soft px-2.5 py-1 text-xs font-medium text-warning">
+                <ShieldQuestion className="size-3.5" aria-hidden />
+                Sample data, not a live registry check
+              </p>
+            )}
           </div>
           <StatusBadge status={result.status} className="text-sm" />
         </div>
@@ -136,7 +142,11 @@ export function ValidationResultCard({ result }: { result: ValidationResult }) {
               style={{ width: `${result.score}%` }}
             />
           </div>
-          <p className="mt-3 text-sm font-medium">{verdict[result.status]}</p>
+          <p className="mt-3 text-sm font-medium">
+            {result.source === "sample"
+              ? "Sample result for demonstration only."
+              : verdict[result.status]}
+          </p>
         </div>
 
         <div className="space-y-2">

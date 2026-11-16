@@ -2,10 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 
 declare const process: { env: Record<string, string | undefined> };
 
-const FREE_LIMIT = 5;
+const FREE_LIMIT = 3;
 const WINDOW_MS = 24 * 60 * 60 * 1000; // counts reset after 24 hours
+const UPSTREAM_TIMEOUT_MS = 8000;
 
 // Demo-grade counter: it lives in server memory and resets if the server restarts.
+// Phase 2 moves this into the database.
 const usage = new Map<string, { count: number; since: number }>();
 
 function visitorId(request: Request): string {
@@ -13,33 +15,69 @@ function visitorId(request: Request): string {
   return forwarded?.split(",")[0]?.trim() || "local";
 }
 
+function currentUsage(id: string) {
+  const now = Date.now();
+  const entry = usage.get(id);
+  return !entry || now - entry.since > WINDOW_MS ? { count: 0, since: now } : entry;
+}
+
+const json = (body: unknown, status = 200) =>
+  Response.json(body, { status, headers: { "Cache-Control": "no-store" } });
+
+const unavailable = () =>
+  json(
+    {
+      error: "service_unavailable",
+      message: "The postcode service is not available right now. Please try again shortly.",
+    },
+    503,
+  );
+
+const text = (value: unknown) => (typeof value === "string" ? value : "");
+const num = (value: unknown) =>
+  typeof value === "number" && Number.isFinite(value) ? value : null;
+
+/**
+ * GET /api/lookup?postcode=FC02A09DB09
+ *
+ * 200 { valid: true,  postcode, area, city, state, lat, lng }
+ * 200 { valid: false, postcode }
+ * 400 { error: "invalid_format", message }
+ * 429 { error: "limit_reached", message }
+ * 503 { error: "service_unavailable", message }
+ *
+ * Nothing from the upstream response or our configuration is passed through.
+ */
 export const Route = createFileRoute("/api/lookup")({
   server: {
     handlers: {
       GET: async ({ request }: { request: Request }) => {
-        // 1. The free-check limit
-        if (process.env.DEMO_UNLIMITED !== "true") {
-          const id = visitorId(request);
-          const now = Date.now();
-          const entry = usage.get(id);
-          const current = !entry || now - entry.since > WINDOW_MS ? { count: 0, since: now } : entry;
-          if (current.count >= FREE_LIMIT) {
-            return Response.json(
-              { error: "limit_reached", message: "Free checks used up. Sign up to continue." },
-              { status: 429 },
-            );
-          }
-          usage.set(id, { count: current.count + 1, since: current.since });
-        }
-
-        // 2. Clean up the postcode
+        // 1. Clean up the postcode. Bad input never uses up a free check.
         const url = new URL(request.url);
         const raw = url.searchParams.get("postcode") ?? url.searchParams.get("code") ?? "";
-        const code = raw.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+        const code = raw
+          .trim()
+          .toUpperCase()
+          .replace(/[^A-Z0-9]/g, "");
         if (code.length !== 11) {
-          return Response.json({ error: "Expected an 11-character postcode" }, { status: 400 });
+          return json(
+            { error: "invalid_format", message: "Expected an 11-character postcode." },
+            400,
+          );
         }
-        // The API expects hyphens, e.g. EK-01-A03-FK-01
+
+        // 2. The free-check limit
+        const limited = process.env["DEMO_UNLIMITED"] !== "true";
+        const id = visitorId(request);
+        const current = currentUsage(id);
+        if (limited && current.count >= FREE_LIMIT) {
+          return json(
+            { error: "limit_reached", message: "Free checks used up. Sign up to continue." },
+            429,
+          );
+        }
+
+        // 3. The API expects hyphens, e.g. EK-01-A03-FK-01
         const hyphenated = [
           code.slice(0, 2),
           code.slice(2, 4),
@@ -48,22 +86,58 @@ export const Route = createFileRoute("/api/lookup")({
           code.slice(9),
         ].join("-");
 
-        const configured = {
-          base: Boolean(process.env.POSTCODE_API_BASE),
-          key: Boolean(process.env.POSTCODE_API_KEY),
-        };
-
-        // 3. Ask the real postcode API
-        try {
-          const upstream = await fetch(
-            `${process.env.POSTCODE_API_BASE}/lookup?code=${hyphenated}`,
-            { headers: { "X-API-Key": process.env.POSTCODE_API_KEY ?? "" } },
-          );
-          const body = await upstream.json().catch(() => null);
-          return Response.json({ configured, upstreamStatus: upstream.status, body });
-        } catch {
-          return Response.json({ configured, error: "Lookup failed" }, { status: 502 });
+        const base = process.env["POSTCODE_API_BASE"];
+        const key = process.env["POSTCODE_API_KEY"];
+        if (!base || !key) {
+          console.error("[Adrex] POSTCODE_API_BASE or POSTCODE_API_KEY is not set");
+          return unavailable();
         }
+
+        // 4. Ask the real postcode API
+        let upstream: Response;
+        try {
+          upstream = await fetch(`${base}/lookup?code=${hyphenated}`, {
+            headers: { "X-API-Key": key },
+            signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
+          });
+        } catch (err) {
+          console.error("[Adrex] postcode API request failed:", err);
+          return unavailable();
+        }
+
+        if (upstream.status !== 404 && !upstream.ok) {
+          console.error("[Adrex] postcode API returned HTTP", upstream.status);
+          return unavailable();
+        }
+
+        // 5. Read the answer. The API answers 200 with valid=false for unknown codes.
+        let valid = false;
+        let data: Record<string, unknown> = {};
+        if (upstream.status !== 404) {
+          const body = await upstream.json().catch(() => null);
+          const found = body?.data;
+          if (!found || typeof found !== "object") {
+            console.error("[Adrex] postcode API sent an unexpected response");
+            return unavailable();
+          }
+          data = found as Record<string, unknown>;
+          valid = data["valid"] === true;
+        }
+
+        // 6. Only a real answer uses up a free check.
+        if (limited) usage.set(id, { count: current.count + 1, since: current.since });
+
+        if (!valid) return json({ valid: false, postcode: code });
+
+        return json({
+          valid: true,
+          postcode: code,
+          area: text(data["area"]),
+          city: text(data["city"]),
+          state: text(data["state"]),
+          lat: num(data["lat"]),
+          lng: num(data["lng"]),
+        });
       },
     },
   },

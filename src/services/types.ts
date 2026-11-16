@@ -1,6 +1,7 @@
 export type VerificationStatus = "verified" | "review" | "high_risk";
 
-export type FailureHistory = "low" | "medium" | "high";
+/** "live" = answered by the NIPOST registry. "sample" = built-in demo postcode, clearly labelled in the UI. */
+export type ResultSource = "live" | "sample";
 
 export interface PostcodeRecord {
   postcode: string;
@@ -10,9 +11,6 @@ export interface PostcodeRecord {
   /** Approximate centroid, used for the responder map placeholder. */
   lat: number;
   lng: number;
-  failureHistory: FailureHistory;
-  /** Many unrelated identities have claimed addresses in this postcode recently. */
-  identityFlagged: boolean;
   nearestHospital: { name: string; distanceKm: number; phone: string };
   nearestPolice: { name: string; distanceKm: number; phone: string };
 }
@@ -35,6 +33,7 @@ export interface ValidationResult {
   score: number;
   reasons: ValidationReason[];
   matched?: Pick<PostcodeRecord, "area" | "city" | "state"> | undefined;
+  source: ResultSource;
   checkedAt: string;
 }
 
