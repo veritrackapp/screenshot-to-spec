@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, Keyboard } from "lucide-react";
+import { ArrowRight, Info, Keyboard } from "lucide-react";
 import { useCallback, useEffect } from "react";
 import { toast } from "sonner";
 import { PageHeader, PageShell } from "@/components/layout/PageHeader";
@@ -12,9 +12,12 @@ import { INCIDENT_LABEL, USSD_CODE, type UssdIncidentEffect } from "@/lib/ussd";
 import { createIncident } from "@/store/incidents";
 import { SAMPLE_POSTCODES } from "@/services/postcodeService";
 
-const title = "Emergency mode — Adrex USSD simulator";
+// Fill in a contact email to show the "Become a sponsor" button below.
+const SPONSOR_EMAIL = "";
+
+const title = "Roadmap demo: emergency USSD — Adrex";
 const description =
-  "Dial *384# on a simulated feature phone to report a medical, fire or security emergency by postcode, or find the nearest hospital and police.";
+  "A simulated feature phone showing how Adrex plans to let anyone report an emergency by postcode over USSD. Roadmap demo: no real alerts are sent.";
 
 export const Route = createFileRoute("/emergency")({
   head: () => ({
@@ -57,8 +60,8 @@ function EmergencyPage() {
         lat: record.lat,
         lng: record.lng,
       });
-      toast.success(`${INCIDENT_LABEL[type]} incident ${incident.id} created`, {
-        description: `${record.area}, ${record.city} · now visible to responders`,
+      toast.success(`${INCIDENT_LABEL[type]} demo incident ${incident.id} created`, {
+        description: `${record.area}, ${record.city} · demo only, no responders were notified`,
         action: { label: "Open console", onClick: () => navigate({ to: "/responders" }) },
       });
     },
@@ -86,9 +89,9 @@ function EmergencyPage() {
   return (
     <PageShell>
       <PageHeader
-        eyebrow="Emergency mode"
+        eyebrow="Roadmap · Demo"
         title="Help from any phone, no data needed"
-        description="Most Nigerians in an emergency have a basic phone and no internet. Adrex works over USSD, so a postcode is all responders need."
+        description="Most Nigerians in an emergency have a basic phone and no internet. Adrex is working toward a USSD service where a postcode is all responders need. This page is a simulation of that plan."
         actions={
           <Button asChild variant="outline">
             <Link to="/responders">
@@ -97,6 +100,18 @@ function EmergencyPage() {
           </Button>
         }
       />
+
+      <div
+        role="note"
+        className="mb-8 flex gap-3 rounded-xl border bg-secondary p-4 text-sm"
+      >
+        <Info className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
+        <p>
+          <strong>Roadmap feature, demo only.</strong> Nothing you do on this page reaches real
+          responders, and the hospitals, police stations and numbers shown are sample data. In a real
+          emergency, call <strong>112</strong>.
+        </p>
+      </div>
 
       <div className="grid gap-8 lg:grid-cols-[auto_1fr]">
         <div className="flex justify-center rounded-3xl bg-soft px-6 py-10 lg:px-14">
@@ -155,6 +170,30 @@ function EmergencyPage() {
           </Card>
 
           <GatewayLog entries={phone.log} />
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Help us make this real</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              <p>
+                Turning this demo into a working service needs partners. We are looking for sponsors
+                and collaborators for:
+              </p>
+              <ul className="list-disc space-y-1 pl-5">
+                <li>A telecom or USSD gateway partner and a dedicated short code</li>
+                <li>Agreements with emergency responders and hospitals in pilot areas</li>
+                <li>Funding for hosting, SMS and a 24/7 monitoring and support process</li>
+              </ul>
+              {SPONSOR_EMAIL && (
+                <Button asChild>
+                  <a href={`mailto:${SPONSOR_EMAIL}?subject=Adrex%20emergency%20USSD%20sponsorship`}>
+                    Become a sponsor <ArrowRight />
+                  </a>
+                </Button>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </div>
     </PageShell>
