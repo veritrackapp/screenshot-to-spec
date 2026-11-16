@@ -76,9 +76,9 @@ function RespondersPage() {
   return (
     <PageShell>
       <PageHeader
-        eyebrow="Responder console"
+        eyebrow="Roadmap · Demo"
         title="Live emergency reports"
-        description="Reports dialled in on *384# appear here instantly, located by postcode."
+        description="A demo of the planned responder console. Reports made in the emergency simulator appear here, located by postcode. No real reports are received yet."
         actions={
           <>
             <Button variant="ghost" size="sm" onClick={() => resetIncidents()}>

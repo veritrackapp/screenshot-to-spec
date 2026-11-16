@@ -91,14 +91,14 @@ export function respond(
         const h = record.nearestHospital;
         return {
           session: null,
-          response: `END Nearest hospital:\n${h.name}\n${h.distanceKm} km away\nCall ${h.phone}`,
+          response: `END DEMO DATA. Nearest hospital:\n${h.name}\n${h.distanceKm} km away\nIn an emergency call 112.`,
         };
       }
       if (session.step === "police_postcode") {
         const p = record.nearestPolice;
         return {
           session: null,
-          response: `END Nearest police:\n${p.name}\n${p.distanceKm} km away\nCall ${p.phone}`,
+          response: `END DEMO DATA. Nearest police:\n${p.name}\n${p.distanceKm} km away\nIn an emergency call 112.`,
         };
       }
       return {
@@ -114,7 +114,7 @@ export function respond(
       }
       return {
         session: null,
-        response: `END ${INCIDENT_LABEL[type]} help requested for ${session.record.postcode}. Responders alerted. Stay where you are.`,
+        response: `END DEMO ONLY: ${INCIDENT_LABEL[type]} report for ${session.record.postcode} was NOT sent to anyone. In danger? Call 112.`,
         incident: { type, record: session.record },
       };
     }

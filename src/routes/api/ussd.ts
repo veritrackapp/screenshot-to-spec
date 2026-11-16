@@ -47,9 +47,8 @@ export const Route = createFileRoute("/api/ussd")({
               return reply("CON What is the emergency?\n1. Medical\n2. Fire\n3. Security");
             }
             const label = TYPES[Number(kind) - 1] ?? "Emergency";
-            const ref = `ADX-${Math.floor(1000 + Math.random() * 9000)}`;
             return reply(
-              `END ${label} alert received.\nLocation: ${formatPostcode(postcode)}\nRef: ${ref}\nIf in danger, call 112.`,
+              `END DEMO ONLY: ${label} report NOT sent to anyone.\nLocation: ${formatPostcode(postcode)}\nIf in danger, call 112.`,
             );
           }
 
@@ -59,7 +58,9 @@ export const Route = createFileRoute("/api/ussd")({
           }
           const place = choice === "2" ? record.nearestHospital : record.nearestPolice;
           const noun = choice === "2" ? "hospital" : "police";
-          return reply(`END Nearest ${noun}: ${place.name}, ${place.distanceKm} km. Tel ${place.phone}`);
+          return reply(
+            `END DEMO DATA. Nearest ${noun}: ${place.name}, ${place.distanceKm} km. In an emergency call 112.`,
+          );
         }
 
         return reply("END Invalid choice. Please dial again.");

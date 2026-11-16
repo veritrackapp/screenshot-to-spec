@@ -8,8 +8,8 @@ import { Logo } from "./Logo";
 export const NAV_ITEMS = [
   { to: "/checkout", label: "Checkout demo" },
   { to: "/dashboard", label: "Dashboard" },
-  { to: "/emergency", label: "Emergency" },
-  { to: "/responders", label: "Responders" },
+  { to: "/emergency", label: "Emergency (demo)" },
+  { to: "/responders", label: "Responders (demo)" },
   { to: "/privacy", label: "Privacy" },
 ] as const;
 
