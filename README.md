@@ -1,6 +1,8 @@
-# Screenshot to Spec
+# Adrex
 
-Implement exactly the screenshot and nothing else
+Address verification for Nigerian checkouts, built on the NIPOST digital postcode API. Live at https://adrex-ng.vercel.app
+
+Copy `.env.example` to `.env.local` and fill in the values to run it locally.
 
 This project was built with [Lovable](https://lovable.dev).
 

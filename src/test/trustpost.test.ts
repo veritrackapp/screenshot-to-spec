@@ -1,6 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { dial, isEnd, respond, MENU_TEXT } from "@/lib/ussd";
-import { SAMPLE_POSTCODES, scoreAddress, statusForScore } from "@/services/postcodeService";
+import {
+  SAMPLE_POSTCODES,
+  findPostcode,
+  scoreAddress,
+  statusForScore,
+} from "@/services/postcodeService";
+
+const sampleScore = (s: (typeof SAMPLE_POSTCODES)[number]) =>
+  scoreAddress(s.postcode, s.address, findPostcode(s.postcode), "sample");
 
 describe("address scoring", () => {
   it("gives each of the 5 sample postcodes its expected status", () => {
@@ -11,13 +19,13 @@ describe("address scoring", () => {
     } as const;
     expect(SAMPLE_POSTCODES).toHaveLength(5);
     for (const s of SAMPLE_POSTCODES) {
-      expect(labels[scoreAddress(s.postcode, s.address).status]).toBe(s.expected);
+      expect(labels[sampleScore(s).status]).toBe(s.expected);
     }
   });
 
   it("keeps the confidence score within 0-100", () => {
     for (const s of SAMPLE_POSTCODES) {
-      const { score } = scoreAddress(s.postcode, s.address);
+      const { score } = sampleScore(s);
       expect(score).toBeGreaterThanOrEqual(0);
       expect(score).toBeLessThanOrEqual(100);
     }
@@ -35,10 +43,48 @@ describe("address scoring", () => {
   });
 
   it("maps score bands to statuses", () => {
-    expect(statusForScore(75)).toBe("verified");
-    expect(statusForScore(74)).toBe("review");
-    expect(statusForScore(45)).toBe("review");
-    expect(statusForScore(44)).toBe("high_risk");
+    expect(statusForScore(85)).toBe("verified");
+    expect(statusForScore(84)).toBe("review");
+    expect(statusForScore(60)).toBe("review");
+    expect(statusForScore(59)).toBe("high_risk");
+  });
+
+  describe("scores only on real signals", () => {
+    const record = findPostcode("FC 02 A09 DB 09");
+    if (!record) throw new Error("sample postcode missing");
+    const good = { street: "7 Aminu Kano Crescent", area: "Wuse II", city: "Abuja", state: "FCT" };
+
+    it("gives 100 when the postcode, state, city and house number all check out", () => {
+      const r = scoreAddress(record.postcode, good, record);
+      expect(r.score).toBe(100);
+      expect(r.status).toBe("verified");
+      expect(r.source).toBe("live");
+    });
+
+    it("sends a city mismatch to review", () => {
+      const r = scoreAddress(record.postcode, { ...good, city: "Lagos" }, record);
+      expect(r.score).toBe(75);
+      expect(r.status).toBe("review");
+    });
+
+    it("warns, but still verifies, when the street has no house number", () => {
+      const r = scoreAddress(record.postcode, { ...good, street: "Near the market" }, record);
+      expect(r.score).toBe(85);
+      expect(r.status).toBe("verified");
+      expect(r.reasons.some((x) => x.outcome === "warn")).toBe(true);
+    });
+
+    it("never mentions delivery failure history or identity flags", () => {
+      for (const s of SAMPLE_POSTCODES) {
+        for (const reason of sampleScore(s).reasons) {
+          expect(reason.label).not.toMatch(/failure|failed|identit/i);
+        }
+      }
+    });
+
+    it("labels the built-in samples as sample data", () => {
+      for (const s of SAMPLE_POSTCODES) expect(sampleScore(s).source).toBe("sample");
+    });
   });
 });
 

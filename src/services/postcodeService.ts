@@ -2,8 +2,9 @@
  * Adrex data access layer.
  *
  * Every read the UI makes goes through this module. Postcode lookups call the
- * live National Digital Alphanumeric Postcode API through /api/lookup and fall
- * back to the demo registry when the API is unreachable or has no record.
+ * live National Digital Alphanumeric Postcode API through /api/lookup. If the
+ * live service can't answer, the check fails with an error: we never guess.
+ * The only non-live result is a clearly labelled sample postcode (see ResultSource).
  */
 import {
   AREA_FAILURE_RATES,
@@ -18,6 +19,7 @@ import type {
   DailyChecks,
   DashboardData,
   PostcodeRecord,
+  ResultSource,
   ValidationReason,
   ValidationResult,
   VerificationStatus,
@@ -34,9 +36,9 @@ export class PostcodeServiceError extends Error {
 }
 
 /** Score at or above which an address is Verified. */
-export const VERIFIED_MIN_SCORE = 75;
+export const VERIFIED_MIN_SCORE = 85;
 /** Score at or above which an address Needs review (below is High risk). */
-export const REVIEW_MIN_SCORE = 45;
+export const REVIEW_MIN_SCORE = 60;
 
 /** NIPOST codes are 11 characters: State, LGA, District, Area, Building. */
 const POSTCODE_PATTERN = /^[A-Z0-9]{11}$/;
@@ -99,16 +101,17 @@ export function scoreAddress(
   postcode: string,
   address: AddressInput,
   record?: PostcodeRecord,
+  source: ResultSource = "live",
 ): ValidationResult {
   const reasons: ValidationReason[] = [];
   let score = 0;
 
   if (record) {
-    score += 35;
+    score += 40;
     reasons.push({ label: "Postcode exists in the national registry", outcome: "pass" });
 
     if (same(address.state, record.state)) {
-      score += 15;
+      score += 20;
       reasons.push({ label: `State matches postcode (${record.state})`, outcome: "pass" });
     } else {
       reasons.push({
@@ -118,7 +121,7 @@ export function scoreAddress(
     }
 
     if (same(address.city, record.city)) {
-      score += 20;
+      score += 25;
       reasons.push({ label: "Area matches stated city", outcome: "pass" });
     } else {
       reasons.push({
@@ -126,29 +129,13 @@ export function scoreAddress(
         outcome: "warn",
       });
     }
-
-    if (record.failureHistory === "low") {
-      score += 20;
-      reasons.push({ label: "Low delivery failure history", outcome: "pass" });
-    } else if (record.failureHistory === "medium") {
-      score += 8;
-      reasons.push({ label: "Some failed deliveries recorded in this area", outcome: "warn" });
-    } else {
-      score -= 10;
-      reasons.push({ label: "High delivery failure history", outcome: "fail" });
-    }
-
-    if (record.identityFlagged) {
-      score -= 25;
-      reasons.push({ label: "Many unrelated identities linked to this postcode", outcome: "fail" });
-    }
   } else {
     reasons.push({ label: "Postcode not found in the national registry", outcome: "fail" });
     reasons.push({ label: "Couldn't confirm city or state", outcome: "fail" });
   }
 
   if (/\d/.test(address.street)) {
-    score += 10;
+    score += 15;
     reasons.push({ label: "Street address includes a house number", outcome: "pass" });
   } else {
     reasons.push({ label: "Street address has no house number", outcome: "warn" });
@@ -162,55 +149,67 @@ export function scoreAddress(
     score,
     reasons,
     matched: record ? { area: record.area, city: record.city, state: record.state } : undefined,
+    source,
     checkedAt: new Date().toISOString(),
   };
 }
 
+interface LookupOutcome {
+  record: PostcodeRecord | undefined;
+  source: ResultSource;
+}
+
+const SERVICE_DOWN_MESSAGE =
+  "We couldn't reach the postcode service. Please try again in a moment.";
+const NOT_AVAILABLE = { name: "Not available yet", distanceKm: 0, phone: "" };
+
 /**
  * Asks the live postcode API (through our /api/lookup route) about a code.
- * Falls back to the demo registry if the API is unreachable or has no record.
- * The browser console shows which path was used.
+ * If the live service can't answer, this throws. It never guesses.
+ * The one non-live result is a sample postcode from the built-in demo registry,
+ * used only when the live registry doesn't know the code; the UI labels it.
  */
-async function fetchRecord(postcode: string): Promise<PostcodeRecord | undefined> {
-  const own = findPostcode(postcode); // Adrex's demo registry and delivery signals
+async function fetchRecord(postcode: string): Promise<LookupOutcome> {
+  const normalized = normalizePostcode(postcode);
+
+  let res: Response;
   try {
-    const res = await fetch(
-      `/api/lookup?postcode=${encodeURIComponent(normalizePostcode(postcode))}`,
-    );
-    console.info("[Adrex] /api/lookup responded with HTTP", res.status);
-    if (res.status === 429) {
-      throw new PostcodeServiceError(
-        "You've used your 5 free checks. Sign up to keep checking addresses.",
-      );
-    }
-    if (!res.ok) throw new Error(`lookup route returned ${res.status}`);
-
-    const api = await res.json();
-    const data = api?.body?.data;
-    console.info("[Adrex] postcode API says:", data);
-    if (!data) throw new Error("no data in the response");
-
-    // The API answers 200 even for unknown codes: valid=false means "no record".
-    if (data.valid !== true) return own;
-
-    const none = { name: "Not available yet", distanceKm: 0, phone: "" };
-    return {
-      postcode: data.postcode ?? normalizePostcode(postcode),
-      area: data.area ?? own?.area ?? "",
-      city: data.city ?? own?.city ?? "",
-      state: data.state ?? own?.state ?? "",
-      lat: data.lat ?? own?.lat ?? 0,
-      lng: data.lng ?? own?.lng ?? 0,
-      failureHistory: own?.failureHistory ?? "low",
-      identityFlagged: own?.identityFlagged ?? false,
-      nearestHospital: own?.nearestHospital ?? none,
-      nearestPolice: own?.nearestPolice ?? none,
-    };
-  } catch (err) {
-    if (err instanceof PostcodeServiceError) throw err;
-    console.warn("[Adrex] live lookup failed, using demo data:", err);
-    return own;
+    res = await fetch(`/api/lookup?postcode=${encodeURIComponent(normalized)}`);
+  } catch {
+    throw new PostcodeServiceError(SERVICE_DOWN_MESSAGE);
   }
+  if (res.status === 429) {
+    throw new PostcodeServiceError(
+      "You've used your 3 free checks today. Sign up to keep checking addresses.",
+    );
+  }
+  if (res.status === 400) {
+    throw new PostcodeServiceError("That postcode isn't in a valid format (e.g. FC 02 A09 DB 09).");
+  }
+  if (!res.ok) throw new PostcodeServiceError(SERVICE_DOWN_MESSAGE);
+
+  const data = await res.json().catch(() => null);
+  if (!data || typeof data.valid !== "boolean")
+    throw new PostcodeServiceError(SERVICE_DOWN_MESSAGE);
+
+  if (!data.valid) {
+    const sample = findPostcode(normalized);
+    return sample ? { record: sample, source: "sample" } : { record: undefined, source: "live" };
+  }
+
+  return {
+    record: {
+      postcode: normalized,
+      area: typeof data.area === "string" ? data.area : "",
+      city: typeof data.city === "string" ? data.city : "",
+      state: typeof data.state === "string" ? data.state : "",
+      lat: typeof data.lat === "number" ? data.lat : 0,
+      lng: typeof data.lng === "number" ? data.lng : 0,
+      nearestHospital: NOT_AVAILABLE,
+      nearestPolice: NOT_AVAILABLE,
+    },
+    source: "live",
+  };
 }
 
 export async function validateAddress(
@@ -218,15 +217,14 @@ export async function validateAddress(
   address: AddressInput,
   options: { simulateOutage?: boolean } = {},
 ): Promise<ValidationResult> {
-  await sleep(900);
   if (options.simulateOutage) {
     throw new PostcodeServiceError("The postcode service didn't respond. Please try again.");
   }
   if (!isValidPostcodeFormat(postcode)) {
     throw new PostcodeServiceError("That postcode isn't in a valid format (e.g. FC 02 A09 DB 09).");
   }
-  const record = await fetchRecord(postcode);
-  return scoreAddress(postcode, address, record);
+  const { record, source } = await fetchRecord(postcode);
+  return scoreAddress(postcode, address, record, source);
 }
 
 // ---------- Dashboard ----------
