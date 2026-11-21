@@ -16,18 +16,18 @@ export function Hero() {
             One trusted address layer for Nigeria
           </h1>
           <p className="max-w-xl text-lg text-primary-foreground/75">
-            Adrex turns the national postcode into a confidence score you can act on — at
-            checkout, during KYC, and when someone dials for help.
+            Adrex turns the national postcode into a confidence score you can act on — at checkout,
+            during KYC, and when someone dials for help.
           </p>
           <div className="flex flex-wrap gap-3">
             <Button asChild variant="inverse" size="lg">
               <Link to="/checkout">
-                Try the checkout demo <ArrowRight />
+                Check an address <ArrowRight />
               </Link>
             </Button>
             <Button asChild variant="outline-inverse" size="lg">
               <Link to="/emergency">
-                <Phone /> See emergency mode
+                <Phone /> Preview the USSD service
               </Link>
             </Button>
           </div>

@@ -12,9 +12,9 @@ import {
 import { PageHeader, PageShell } from "@/components/layout/PageHeader";
 import { validateAddress } from "@/services/postcodeService";
 
-const title = "Checkout demo — Adrex";
+const title = "Verify an address — Adrex";
 const description =
-  "Try Adrex in a sample store checkout: enter a Nigerian postcode and get a Verified, Needs review or High risk score with reasons.";
+  "Enter a Nigerian postcode and delivery address and get a Verified, Needs review or High risk score with reasons.";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -31,34 +31,27 @@ export const Route = createFileRoute("/checkout")({
 });
 
 function CheckoutPage() {
-  const [simulateOutage, setSimulateOutage] = useState(false);
   const lastValues = useRef<CheckoutValues | null>(null);
 
   const mutation = useMutation({
-    mutationFn: ({ values, outage }: { values: CheckoutValues; outage: boolean }) =>
-      validateAddress(values.postcode, values, { simulateOutage: outage }),
+    mutationFn: (values: CheckoutValues) => validateAddress(values.postcode, values),
   });
 
   const run = (values: CheckoutValues) => {
     lastValues.current = values;
-    mutation.mutate({ values, outage: simulateOutage });
+    mutation.mutate(values);
   };
 
   return (
     <PageShell>
       <PageHeader
-        eyebrow="Checkout demo"
+        eyebrow="Address check"
         title="Check the address before you ship"
-        description="A sample store checkout. When the order is placed, Adrex scores the delivery address against the national postcode."
+        description="Enter the delivery address and postcode. Adrex checks the postcode against the national registry and scores the address."
       />
 
       <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-        <CheckoutForm
-          pending={mutation.isPending}
-          simulateOutage={simulateOutage}
-          onSimulateOutageChange={setSimulateOutage}
-          onSubmit={run}
-        />
+        <CheckoutForm pending={mutation.isPending} onSubmit={run} />
 
         <div className="space-y-6 lg:sticky lg:top-24 lg:self-start">
           <div aria-live="polite">

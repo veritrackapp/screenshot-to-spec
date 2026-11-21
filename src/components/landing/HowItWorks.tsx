@@ -10,12 +10,12 @@ const steps = [
   {
     Icon: Gauge,
     title: "Score",
-    body: "Get a 0–100 confidence score with plain reasons: location match, delivery history, fraud signals.",
+    body: "Get a 0–100 confidence score with plain reasons: the postcode exists, and the state, city and street match.",
   },
   {
     Icon: Megaphone,
-    title: "Report",
-    body: "Feed outcomes back — failed drops, fraud, emergencies — so every check gets smarter.",
+    title: "Decide",
+    body: "Verified, needs review or high risk: ship the order, confirm with the customer, or ask for a correct postcode.",
   },
 ];
 

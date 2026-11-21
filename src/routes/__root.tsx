@@ -92,6 +92,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content: "Validate, score and report Nigerian addresses on the national postcode layer.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Adrex by Justbeth International Limited" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [

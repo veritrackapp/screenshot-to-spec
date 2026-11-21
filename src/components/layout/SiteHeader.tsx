@@ -6,7 +6,7 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/s
 import { Logo } from "./Logo";
 
 export const NAV_ITEMS = [
-  { to: "/checkout", label: "Checkout demo" },
+  { to: "/checkout", label: "Verify an address" },
   { to: "/dashboard", label: "Dashboard" },
   { to: "/emergency", label: "Emergency (demo)" },
   { to: "/responders", label: "Responders (demo)" },

@@ -183,7 +183,7 @@ function AccountPage() {
       </div>
 
       <div className="mt-5 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-        Preview with sample data. Live check history and payments are on the roadmap.
+        Sample data. The check history, test key and invoices on this page are placeholders.
       </div>
 
       {notice && (

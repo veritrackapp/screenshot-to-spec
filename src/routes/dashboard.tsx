@@ -41,6 +41,9 @@ function DashboardPage() {
           </Badge>
         }
       />
+      <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+        Sample data. The figures below are placeholders, not your account's real activity.
+      </div>
       <KpiCards kpis={data.kpis} />
       <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
         <ChecksChart data={data.daily} />

@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { LocateButton } from "@/components/LocateButton";
 import { isValidPostcodeFormat } from "@/services/postcodeService";
 import type { AddressInput } from "@/services/types";
@@ -29,13 +28,9 @@ const EMPTY: CheckoutValues = {
 
 export function CheckoutForm({
   pending,
-  simulateOutage,
-  onSimulateOutageChange,
   onSubmit,
 }: {
   pending: boolean;
-  simulateOutage: boolean;
-  onSimulateOutageChange: (v: boolean) => void;
   onSubmit: (values: CheckoutValues) => void;
 }) {
   const [values, setValues] = useState<CheckoutValues>(EMPTY);
@@ -139,14 +134,10 @@ export function CheckoutForm({
             </Field>
           </div>
 
-          <div className="flex flex-col gap-4 border-t pt-5 sm:flex-row sm:items-center sm:justify-between">
-            <label className="flex items-center gap-2.5 text-sm text-muted-foreground">
-              <Switch checked={simulateOutage} onCheckedChange={onSimulateOutageChange} />
-              Simulate service outage
-            </label>
+          <div className="flex justify-end border-t pt-5">
             <Button type="submit" size="lg" disabled={pending}>
               {pending ? <Loader2 className="animate-spin" /> : <Lock />}
-              {pending ? "Checking address…" : "Place order"}
+              {pending ? "Checking address…" : "Check address"}
             </Button>
           </div>
         </form>
