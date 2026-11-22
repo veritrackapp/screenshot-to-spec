@@ -96,6 +96,20 @@ export function statusForScore(score: number): VerificationStatus {
 
 const same = (a: string, b: string) => a.trim().toLowerCase() === b.trim().toLowerCase();
 
+/** "Ebonyi State" and "ebonyi" match; so do FCT, Abuja and Federal Capital Territory. */
+const stateKey = (value: string) => {
+  const v = value
+    .trim()
+    .toLowerCase()
+    .replace(/\s+state$/, "");
+  return ["fct", "abuja", "fct abuja", "federal capital territory"].includes(v) ? "fct" : v;
+};
+
+const titleCase = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/(^|[\s-])([a-z])/g, (_, gap: string, ch: string) => gap + ch.toUpperCase());
+
 /** Pure scoring used by validateAddress. Exported for tests. */
 export function scoreAddress(
   postcode: string,
@@ -110,7 +124,7 @@ export function scoreAddress(
     score += 40;
     reasons.push({ label: "Postcode exists in the national registry", outcome: "pass" });
 
-    if (same(address.state, record.state)) {
+    if (stateKey(address.state) === stateKey(record.state)) {
       score += 20;
       reasons.push({ label: `State matches postcode (${record.state})`, outcome: "pass" });
     } else {
@@ -120,7 +134,7 @@ export function scoreAddress(
       });
     }
 
-    if (same(address.city, record.city)) {
+    if ([record.city, record.lga].some((name) => name && same(address.city, name))) {
       score += 25;
       reasons.push({ label: "Area matches stated city", outcome: "pass" });
     } else {
@@ -197,14 +211,17 @@ async function fetchRecord(postcode: string): Promise<LookupOutcome> {
     return sample ? { record: sample, source: "sample" } : { record: undefined, source: "live" };
   }
 
+  const locality = titleCase(typeof data.locality === "string" ? data.locality : "");
+  const lga = titleCase(typeof data.lga === "string" ? data.lga : "");
   return {
     record: {
       postcode: normalized,
-      area: typeof data.area === "string" ? data.area : "",
-      city: typeof data.city === "string" ? data.city : "",
-      state: typeof data.state === "string" ? data.state : "",
-      lat: typeof data.lat === "number" ? data.lat : 0,
-      lng: typeof data.lng === "number" ? data.lng : 0,
+      area: locality,
+      city: locality || lga,
+      lga,
+      state: titleCase(typeof data.state === "string" ? data.state : ""),
+      lat: 0,
+      lng: 0,
       nearestHospital: NOT_AVAILABLE,
       nearestPolice: NOT_AVAILABLE,
     },

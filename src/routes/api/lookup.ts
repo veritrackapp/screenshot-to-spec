@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { errorCode, lookupUrl, parseLookup } from "@/lib/nipost";
 
 declare const process: { env: Record<string, string | undefined> };
 
 const FREE_LIMIT = 3;
 const WINDOW_MS = 24 * 60 * 60 * 1000; // counts reset after 24 hours
-const UPSTREAM_TIMEOUT_MS = 8000;
+const UPSTREAM_TIMEOUT_MS = 9000;
 
 // Demo-grade counter: it lives in server memory and resets if the server restarts.
 // Phase 2 moves this into the database.
@@ -33,20 +34,17 @@ const unavailable = () =>
     503,
   );
 
-const text = (value: unknown) => (typeof value === "string" ? value : "");
-const num = (value: unknown) =>
-  typeof value === "number" && Number.isFinite(value) ? value : null;
-
 /**
  * GET /api/lookup?postcode=FC02A09DB09
  *
- * 200 { valid: true,  postcode, area, city, state, lat, lng }
+ * 200 { valid: true,  postcode, state, lga, locality, zone }
  * 200 { valid: false, postcode }
  * 400 { error: "invalid_format", message }
  * 429 { error: "limit_reached", message }
  * 503 { error: "service_unavailable", message }
  *
- * Nothing from the upstream response or our configuration is passed through.
+ * Only the administrative place is passed on. The recent house address and building use that
+ * NIPOST can return are personal data, so they never leave this route.
  */
 export const Route = createFileRoute("/api/lookup")({
   server: {
@@ -93,10 +91,10 @@ export const Route = createFileRoute("/api/lookup")({
           return unavailable();
         }
 
-        // 4. Ask the real postcode API
+        // 4. Ask the real postcode API (GET {base}/v1/lookup, key in the X-API-Key header)
         let upstream: Response;
         try {
-          upstream = await fetch(`${base}/lookup?code=${hyphenated}`, {
+          upstream = await fetch(lookupUrl(base, hyphenated), {
             headers: { "X-API-Key": key },
             signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
           });
@@ -105,39 +103,30 @@ export const Route = createFileRoute("/api/lookup")({
           return unavailable();
         }
 
-        if (upstream.status !== 404 && !upstream.ok) {
-          console.error("[Adrex] postcode API returned HTTP", upstream.status);
-          return unavailable();
-        }
+        // 5. Read the answer
+        const body = await upstream.json().catch(() => null);
+        let lookup = upstream.ok ? parseLookup(body) : null;
 
-        // 5. Read the answer. The API answers 200 with valid=false for unknown codes.
-        let valid = false;
-        let data: Record<string, unknown> = {};
-        if (upstream.status !== 404) {
-          const body = await upstream.json().catch(() => null);
-          const found = body?.data;
-          if (!found || typeof found !== "object") {
-            console.error("[Adrex] postcode API sent an unexpected response");
+        if (!upstream.ok) {
+          const reason = errorCode(body);
+          const unknownCode = upstream.status === 404 && /not_?found/i.test(reason ?? "");
+          if (!unknownCode) {
+            // 401 bad key, 402 no credits, 403 missing scope, 429 rate limit, 5xx ...
+            console.error("[Adrex] postcode API returned HTTP", upstream.status, reason ?? "");
             return unavailable();
           }
-          data = found as Record<string, unknown>;
-          valid = data["valid"] === true;
+          lookup = { valid: false };
+        }
+        if (!lookup) {
+          console.error("[Adrex] postcode API sent an unexpected response");
+          return unavailable();
         }
 
         // 6. Only a real answer uses up a free check.
         if (limited) usage.set(id, { count: current.count + 1, since: current.since });
 
-        if (!valid) return json({ valid: false, postcode: code });
-
-        return json({
-          valid: true,
-          postcode: code,
-          area: text(data["area"]),
-          city: text(data["city"]),
-          state: text(data["state"]),
-          lat: num(data["lat"]),
-          lng: num(data["lng"]),
-        });
+        if (!lookup.valid || !lookup.place) return json({ valid: false, postcode: code });
+        return json({ valid: true, postcode: code, ...lookup.place });
       },
     },
   },

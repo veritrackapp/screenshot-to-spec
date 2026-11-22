@@ -8,6 +8,8 @@ export interface PostcodeRecord {
   area: string;
   city: string;
   state: string;
+  /** Local government area, when the registry provides one. */
+  lga?: string;
   /** Approximate centroid, used for the responder map placeholder. */
   lat: number;
   lng: number;
