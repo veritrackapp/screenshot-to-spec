@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Check, Copy, CreditCard, KeyRound, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { getSession, signOut, type Session } from "@/lib/auth";
+import { signOut, useSession } from "@/lib/auth";
 
 export const Route = createFileRoute("/account")({
   component: AccountPage,
@@ -131,21 +131,14 @@ function ChecksTable({ rows }: { rows: Row[] }) {
 
 function AccountPage() {
   const navigate = useNavigate();
-  const [session, setSession] = useState<Session | null>(null);
-  const [ready, setReady] = useState(false);
+  const { session, loading } = useSession();
   const [tab, setTab] = useState<Tab>("overview");
   const [notice, setNotice] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    const current = getSession();
-    if (!current) {
-      navigate({ to: "/login" });
-      return;
-    }
-    setSession(current);
-    setReady(true);
-  }, [navigate]);
+    if (!loading && !session) navigate({ to: "/login", search: { next: "/account" } });
+  }, [loading, session, navigate]);
 
   const copySnippet = async () => {
     try {
@@ -157,15 +150,15 @@ function AccountPage() {
     }
   };
 
-  const logout = () => {
-    signOut();
-    navigate({ to: "/login" });
+  const logout = async () => {
+    await signOut();
+    navigate({ to: "/login", search: {} });
   };
 
   const notConnected = () =>
     setNotice("Payments are not connected yet. This screen previews the billing flow.");
 
-  if (!ready || !session) {
+  if (loading || !session) {
     return <main className="mx-auto max-w-6xl px-4 py-16 text-sm text-muted-foreground">Loading your account…</main>;
   }
 

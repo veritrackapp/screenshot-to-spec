@@ -16,10 +16,12 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as EmergencyRouteImport } from './routes/emergency'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RespondersRouteImport } from './routes/responders'
 import { Route as ApiLocateRouteImport } from './routes/api/locate'
 import { Route as ApiLookupRouteImport } from './routes/api/lookup'
 import { Route as ApiUssdRouteImport } from './routes/api/ussd'
+import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -56,6 +58,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RespondersRoute = RespondersRouteImport.update({
   id: '/responders',
   path: '/responders',
@@ -76,6 +83,11 @@ const ApiUssdRoute = ApiUssdRouteImport.update({
   path: '/api/ussd',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -85,10 +97,12 @@ export interface FileRoutesByFullPath {
   '/emergency': typeof EmergencyRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/responders': typeof RespondersRoute
   '/api/locate': typeof ApiLocateRoute
   '/api/lookup': typeof ApiLookupRoute
   '/api/ussd': typeof ApiUssdRoute
+  '/auth/callback': typeof AuthCallbackRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -98,10 +112,12 @@ export interface FileRoutesByTo {
   '/emergency': typeof EmergencyRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/responders': typeof RespondersRoute
   '/api/locate': typeof ApiLocateRoute
   '/api/lookup': typeof ApiLookupRoute
   '/api/ussd': typeof ApiUssdRoute
+  '/auth/callback': typeof AuthCallbackRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -112,10 +128,12 @@ export interface FileRoutesById {
   '/emergency': typeof EmergencyRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/responders': typeof RespondersRoute
   '/api/locate': typeof ApiLocateRoute
   '/api/lookup': typeof ApiLookupRoute
   '/api/ussd': typeof ApiUssdRoute
+  '/auth/callback': typeof AuthCallbackRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -127,10 +145,12 @@ export interface FileRouteTypes {
     | '/emergency'
     | '/login'
     | '/privacy'
+    | '/reset-password'
     | '/responders'
     | '/api/locate'
     | '/api/lookup'
     | '/api/ussd'
+    | '/auth/callback'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -140,10 +160,12 @@ export interface FileRouteTypes {
     | '/emergency'
     | '/login'
     | '/privacy'
+    | '/reset-password'
     | '/responders'
     | '/api/locate'
     | '/api/lookup'
     | '/api/ussd'
+    | '/auth/callback'
   id:
     | '__root__'
     | '/'
@@ -153,10 +175,12 @@ export interface FileRouteTypes {
     | '/emergency'
     | '/login'
     | '/privacy'
+    | '/reset-password'
     | '/responders'
     | '/api/locate'
     | '/api/lookup'
     | '/api/ussd'
+    | '/auth/callback'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -167,10 +191,12 @@ export interface RootRouteChildren {
   EmergencyRoute: typeof EmergencyRoute
   LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   RespondersRoute: typeof RespondersRoute
   ApiLocateRoute: typeof ApiLocateRoute
   ApiLookupRoute: typeof ApiLookupRoute
   ApiUssdRoute: typeof ApiUssdRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -224,6 +250,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/responders': {
       id: '/responders'
       path: '/responders'
@@ -252,6 +285,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiUssdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -263,10 +303,12 @@ const rootRouteChildren: RootRouteChildren = {
   EmergencyRoute: EmergencyRoute,
   LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   RespondersRoute: RespondersRoute,
   ApiLocateRoute: ApiLocateRoute,
   ApiLookupRoute: ApiLookupRoute,
   ApiUssdRoute: ApiUssdRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
