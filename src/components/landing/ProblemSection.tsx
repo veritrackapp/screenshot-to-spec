@@ -15,13 +15,14 @@ const problems = [
     title: "Fake KYC addresses",
     problem: "Fraudsters reuse made-up addresses to open accounts and take loans.",
     solution:
-      "Every address gets a score, and areas linked to many unrelated identities are flagged.",
+      "Every address gets a score based on whether the postcode exists and matches the state, city and street given.",
   },
   {
     Icon: Siren,
     title: "Slow emergency response",
     problem: "Callers struggle to describe where they are, and minutes are lost.",
-    solution: "Anyone on any phone will be able to dial a short code and share a postcode responders can find (simulated in this demo).",
+    solution:
+      "Anyone on any phone will be able to dial a short code and share a postcode responders can find (see the USSD preview).",
   },
 ];
 

@@ -9,17 +9,17 @@ export function CtaBand() {
         <div className="max-w-xl space-y-2">
           <h2 className="text-3xl font-semibold">See a score in under a second</h2>
           <p className="text-primary-foreground/75">
-            Run a sample checkout, then watch the business dashboard and emergency console.
+            Enter a postcode and delivery address and see how Adrex scores it.
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
           <Button asChild variant="inverse" size="lg">
             <Link to="/checkout">
-              Open checkout demo <ArrowRight />
+              Check an address <ArrowRight />
             </Link>
           </Button>
           <Button asChild variant="outline-inverse" size="lg">
-            <Link to="/dashboard">View dashboard</Link>
+            <Link to="/login">Sign in</Link>
           </Button>
         </div>
       </div>

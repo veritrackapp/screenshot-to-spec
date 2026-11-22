@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const title = "Privacy — Adrex";
 const description =
-  "How Adrex minimises data, deletes raw records after 90 days, and splits controller and processor roles under the Nigeria Data Protection Act 2023.";
+  "What Adrex, operated by Justbeth International Limited, collects and keeps when you check an address, and who is responsible under the Nigeria Data Protection Act 2023.";
 
 export const Route = createFileRoute("/privacy")({
   head: () => ({
@@ -24,30 +24,31 @@ export const Route = createFileRoute("/privacy")({
 const sections = [
   {
     Icon: Filter,
-    title: "Data minimisation",
+    title: "What we collect",
     points: [
-      "We only receive what's needed to score an address: the postcode and the address lines typed in.",
-      "Names and phone numbers stay with the business. They are never sent to the scoring service.",
-      "Results are a score and reasons — not a profile of the person living there.",
-      "Emergency reports carry a postcode and an incident type, nothing more.",
+      "To check an address we receive the postcode you enter. The street, area, city and state you type are scored in your browser and are not sent to our servers.",
+      "The postcode is passed to the National Digital Alphanumeric Postcode API, operated by NIPOST, to confirm that it exists.",
+      "If you use the location button, your device's coordinates go to our server and on to OpenStreetMap's Nominatim service, which returns the nearest address.",
+      "If you create an account, your email address and sign-in details are held by our authentication provider, Supabase (and by Google if you sign in with Google).",
     ],
   },
   {
     Icon: Clock,
-    title: "Retention limits",
+    title: "What we keep",
     points: [
-      "Raw check records are deleted automatically after 90 days.",
-      "After that, only anonymous totals per area remain (for example, failure rate in Sabon Gari).",
-      "Emergency incident records follow the responding agency's legal retention rules.",
+      "Adrex does not currently store records of address checks.",
+      "To enforce the free daily limit, your IP address is held briefly in server memory. It is not written to a database, and it is cleared after 24 hours or when the server restarts.",
+      "Our hosting provider, Vercel, keeps standard request logs for the site.",
+      "The USSD emergency preview keeps its sample incidents in your own browser only.",
     ],
   },
   {
     Icon: Building2,
-    title: "Controller and processor",
+    title: "Who is responsible",
     points: [
-      "The business using Adrex (a store, bank or logistics firm) is the data controller: it decides why the address is checked.",
-      "Adrex is the data processor: it scores addresses only on the controller's instructions, under a written agreement.",
-      "Postcode reference data comes from the national postcode system; we don't sell or share check data with third parties.",
+      "Adrex is operated by Justbeth International Limited.",
+      "When a business uses Adrex to check its customers' addresses, that business decides why the address is checked (the data controller). Adrex processes addresses on the business's instructions.",
+      "We don't sell personal data, and we don't ask for names or phone numbers to run a check.",
     ],
   },
   {
@@ -56,7 +57,7 @@ const sections = [
     points: [
       "Processing relies on a lawful basis set by the controller, such as performing a contract for delivery.",
       "People can ask the controller to access, correct or delete their data; we help controllers respond.",
-      "Breaches are reported to the controller without delay so they can notify the NDPC within 72 hours.",
+      "We report breaches to the business using Adrex without delay so it can notify the NDPC within 72 hours.",
     ],
   },
 ];
@@ -66,8 +67,8 @@ function PrivacyPage() {
     <PageShell>
       <PageHeader
         eyebrow="Privacy"
-        title="Trust starts with how we handle data"
-        description="Adrex is designed around the Nigeria Data Protection Act 2023: collect less, keep it briefly, and be clear about who is responsible."
+        title="How we handle your data"
+        description="What Adrex collects, what it keeps, and who is responsible for it, under the Nigeria Data Protection Act 2023."
       />
       <div className="grid gap-5 md:grid-cols-2">
         {sections.map(({ Icon, title, points }) => (
@@ -91,9 +92,7 @@ function PrivacyPage() {
           </Card>
         ))}
       </div>
-      <p className="text-xs text-muted-foreground">
-        This page describes the intended design of the Adrex demo and is not legal advice.
-      </p>
+      <p className="text-xs text-muted-foreground">Last updated 21 November 2026.</p>
     </PageShell>
   );
 }
