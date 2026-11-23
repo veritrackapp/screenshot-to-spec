@@ -7,6 +7,24 @@
 --   * visits, demo_usage, sponsor_leads, audit_log and app_settings are only reachable by
 --     the server using the service role key. The browser can never read or write them.
 
+-- ------------------------------------------------------------ safety check
+-- Stops with a clear message if an older, different "checks" table is in the way.
+do $$
+begin
+  if exists (
+       select 1 from information_schema.tables
+       where table_schema = 'public' and table_name = 'checks'
+     )
+     and not exists (
+       select 1 from information_schema.columns
+       where table_schema = 'public' and table_name = 'checks' and column_name = 'user_id'
+     )
+  then
+    raise exception 'An older public.checks table already exists. Nothing was changed. Check it is empty and unused, drop it, then run this file again.';
+  end if;
+end
+$$;
+
 -- ---------------------------------------------------------------- profiles
 create table if not exists public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,
